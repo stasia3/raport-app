@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1f1f1f;
+            color: white;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #4CAF50;
+        }
+
+        form {
+            max-width: 500px;
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        label {
+            display: block;
+            margin-top: 12px;
+            margin-bottom: 6px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 6px;
+            background-color: #333;
+            color: white;
+        }
+
+        .btn {
+            margin-top: 20px;
+            padding: 10px 14px;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+        }
+
+        .btn-save {
+            background-color: #4CAF50;
+        }
+
+        .btn-back {
+            background-color: #777;
+            text-decoration: none;
+            display: inline-block;
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1 th:text="${isEdit} ? 'Edit User' : 'Add User'"></h1>
+
+<form th:action="@{/users/save}" th:object="${user}" method="post">
+    <input type="hidden" th:field="*{id}"/>
+
+    <label>Email</label>
+    <input type="email" th:field="*{email}" required>
+
+    <label>Password Hash</label>
+    <input type="text" th:field="*{passwordHash}" required>
+
+    <label>Role</label>
+    <select th:field="*{userRole}" required>
+        <option value="">Select role</option>
+        <option th:each="role : ${roles}"
+                th:value="${role}"
+                th:text="${role}">
+        </option>
+    </select>
+
+    <button type="submit" class="btn btn-save">Save</button>
+    <a th:href="@{/users}" class="btn btn-back">Back</a>
+</form>
+
+</body>
+</html>

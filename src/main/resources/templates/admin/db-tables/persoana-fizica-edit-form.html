@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Persoana Fizica</title>
+</head>
+<body>
+
+<h1>Edit Persoana Fizica</h1>
+
+<form th:action="@{/persoane-fizice/update/{id}(id=${persoanaFizica.userId})}"
+      th:object="${persoanaFizica}"
+      method="post">
+
+    <p>
+        <strong>User ID:</strong>
+        <span th:text="${persoanaFizica.userId}"></span>
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        <span th:text="${persoanaFizica.user.email}"></span>
+    </p>
+
+    <label>First Name</label>
+    <input type="text" th:field="*{firstName}" required>
+
+    <label>Last Name</label>
+    <input type="text" th:field="*{lastName}" required>
+
+    <label>Phone Number</label>
+    <input type="text" th:field="*{phoneNumber}">
+
+    <label>Karma Points</label>
+    <input type="number" th:field="*{karmaPoints}" required>
+
+    <label>User Type</label>
+    <select th:field="*{userType}" required>
+        <option value="">Select type</option>
+        <option th:each="type : ${userTypes}"
+                th:value="${type}"
+                th:text="${type}">
+        </option>
+    </select>
+
+    <button type="submit">Update</button>
+    <a th:href="@{/persoane-fizice}">Back</a>
+</form>
+
+</body>
+</html>
