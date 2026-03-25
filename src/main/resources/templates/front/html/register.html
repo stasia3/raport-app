@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CivicReport — Creare Cont</title>
-    <link rel="stylesheet" href="../styles.css" />
+    <link rel="stylesheet" th:href="@{css/styles.css}" />
 </head>
 <body>
 
@@ -48,7 +48,7 @@
         <p>Completează datele de mai jos pentru a te înregistra.</p>
       </div>
 
-      <form action="feed.html" method="get" novalidate>
+      <form th:action="@{/register}" method="post" novalidate>
 
         <div class="form-row">
           <div class="form-group">
@@ -130,7 +130,7 @@
       </form>
 
       <div class="auth-footer">
-        Ai deja cont? <a href="index.html">Înapoi la Login</a>
+        Ai deja cont? <a th:href="@{/login}">Înapoi la Login</a>
       </div>
     </main>
 

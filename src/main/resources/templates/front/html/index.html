@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ro">
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -48,7 +48,7 @@
         <p>Intră în cont pentru a raporta sau urmări problemele tale.</p>
       </div>
 
-      <form action="feed.html" method="get" novalidate>
+      <form action="@{/login}" method="post" novalidate>
 
         <div class="form-group">
           <label for="email">Email</label>
@@ -81,11 +81,15 @@
         <button type="submit" class="btn btn-primary">Login</button>
 
       </form>
+      <div class="error" th:if="${error}">
+        <p th:text="${error}"></p>
+      </div>
 
       <div class="auth-footer">
         Nu ai cont? <a href="register.html">Creare cont nou</a>
       </div>
     </main>
+
 
   </div>
 

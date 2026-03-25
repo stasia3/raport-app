@@ -5,9 +5,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class AdminController {
+    private final String rootFolder = "admin/";
 
     @GetMapping("/admin")
     public String adminPanel() {
-        return "admin/admin-panel";
+        return rootFolder + "admin-panel";
     }
 }

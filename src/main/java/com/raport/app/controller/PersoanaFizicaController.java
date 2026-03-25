@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/persoane-fizice")
 public class PersoanaFizicaController {
+    private final String rootFolder = "admin/db-tables/";
 
     private final PersoanaFizicaService persoanaFizicaService;
     private final UserRepository userRepository;
@@ -24,7 +25,7 @@ public class PersoanaFizicaController {
     @GetMapping
     public String list(Model model) {
         model.addAttribute("persoane", persoanaFizicaService.getAll());
-        return "/admin/db-tables/persoana-fizica-list";
+        return rootFolder + "persoana-fizica-list";
     }
 
     @GetMapping("/new")
@@ -32,7 +33,7 @@ public class PersoanaFizicaController {
         model.addAttribute("persoanaFizica", new PersoanaFizica());
         model.addAttribute("userTypes", PersoanaFizicaUserType.values());
         model.addAttribute("users", userRepository.findAll());
-        return "persoana-fizica-form";
+        return rootFolder + "persoana-fizica-form";
     }
 
     @PostMapping("/create")
@@ -62,7 +63,7 @@ public class PersoanaFizicaController {
         model.addAttribute("persoanaFizica", persoanaFizica);
         model.addAttribute("userTypes", PersoanaFizicaUserType.values());
 
-        return "persoana-fizica-edit-form";
+        return rootFolder + "persoana-fizica-edit-form";
     }
 
     @PostMapping("/update/{id}")

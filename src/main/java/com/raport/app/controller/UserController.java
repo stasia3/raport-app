@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @Controller
 @RequestMapping("/users")
 public class UserController {
+    private final String rootFolder = "admin/db-tables/";
 
     private final UserService userService;
 
@@ -20,7 +21,7 @@ public class UserController {
     @GetMapping
     public String users(Model model) {
         model.addAttribute("users", userService.getAllUsers());
-        return "admin/db-tables/users";
+        return rootFolder + "users";
     }
 
     @GetMapping("/new")
@@ -28,7 +29,7 @@ public class UserController {
         model.addAttribute("user", new User());
         model.addAttribute("roles", UserRole.values());
         model.addAttribute("isEdit", false);
-        return "user-form";
+        return rootFolder + "user-form";
     }
 
     @PostMapping("/save")
@@ -42,7 +43,7 @@ public class UserController {
         model.addAttribute("user", userService.getUserById(id));
         model.addAttribute("roles", UserRole.values());
         model.addAttribute("isEdit", true);
-        return "user-form";
+        return rootFolder + "user-form";
     }
 
     @GetMapping("/delete/{id}")
