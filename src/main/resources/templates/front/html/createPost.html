@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CivicReport — Postare nouă</title>
-  <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="../styles.css" />
 </head>
 <body>
 
@@ -184,45 +184,78 @@
         </div>
 
         <!-- ── Locație ── -->
-        <div class="form-card">
-          <div class="form-card-title">Locație</div>
+          <div class="form-card">
+              <div class="form-card-title">Locație</div>
 
-          <div class="form-group">
-            <label for="address">Adresă <span class="req">*</span></label>
-            <input
-              type="text"
-              id="address"
-              name="address"
-              placeholder="Stradă, număr, sector / județ"
-              required
-            />
-          </div>
+              <div class="form-group">
+                  <label for="address">Adresă <span class="req">*</span></label>
+                  <input
+                          type="text"
+                          id="address"
+                          name="address"
+                          placeholder="Stradă, număr, sector / județ"
+                          required
+                  />
+              </div>
 
-          <div class="form-row">
-            <div class="form-group">
-              <label for="district">Sector / Județ</label>
-              <select id="district" name="district">
-                <option value="" disabled selected>Selectează</option>
-                <option>Sector 1</option>
-                <option>Sector 2</option>
-                <option>Sector 3</option>
-                <option>Sector 4</option>
-                <option>Sector 5</option>
-                <option>Sector 6</option>
-                <option>Alt județ</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="landmark">Reper vizibil <span class="optional">(opțional)</span></label>
-              <input
-                type="text"
-                id="landmark"
-                name="landmark"
-                placeholder="Ex: lângă benzinărie, vis-a-vis de piață..."
-              />
-            </div>
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="district">Sector / Județ</label>
+                      <select id="district" name="district">
+                          <option value="" disabled selected>Selectează</option>
+                          <option>Sector 1</option>
+                          <option>Sector 2</option>
+                          <option>Sector 3</option>
+                          <option>Sector 4</option>
+                          <option>Sector 5</option>
+                          <option>Sector 6</option>
+                          <option>Alt județ</option>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label for="landmark">Reper vizibil <span class="optional">(opțional)</span></label>
+                      <input
+                              type="text"
+                              id="landmark"
+                              name="landmark"
+                              placeholder="Ex: lângă benzinărie, vis-a-vis de piață..."
+                      />
+                  </div>
+              </div>
+
+              <div class="form-row">
+                  <div class="form-group">
+                      <label for="gps_lat">GPS Latitudine <span class="optional">(automat)</span></label>
+                      <input
+                              type="text"
+                              id="gps_lat"
+                              name="gps_lat"
+                              placeholder="Se completează automat"
+                              readonly
+                      />
+                  </div>
+
+                  <div class="form-group">
+                      <label for="gps_long">GPS Longitudine <span class="optional">(automat)</span></label>
+                      <input
+                              type="text"
+                              id="gps_long"
+                              name="gps_long"
+                              placeholder="Se completează automat"
+                              readonly
+                      />
+                  </div>
+              </div>
+
+              <div class="geo-actions">
+                  <button type="button" class="btn btn-secondary" onclick="getGeolocation()">
+                      Preia datele geografice din locația actuală
+                  </button>
+                  <span class="form-hint geo-note">
+      Postările cu locație GPS validată au prioritate mai mare în sistemul de triaj.
+    </span>
+              </div>
           </div>
-        </div>
 
        
 
@@ -237,6 +270,8 @@
     </div><!-- /create-container -->
   </div><!-- /create-layout -->
 </div><!-- /app-layout -->
+
+<script src="../js/geolocation.js"></script>
 
 </body>
 </html>

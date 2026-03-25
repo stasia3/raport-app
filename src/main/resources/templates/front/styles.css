@@ -210,7 +210,7 @@ a:hover { opacity: 0.65; text-decoration: none; }
 
 /* ── Auth Form Panel (right) ── */
 .auth-panel {
-  width: 460px;
+  width: min(460px, 100%);
   background: var(--surface);
   display: flex;
   flex-direction: column;
@@ -369,22 +369,27 @@ a:hover { opacity: 0.65; text-decoration: none; }
    APP LAYOUT  (feed.html, createPost.html)
    ============================================================ */
 
-.app-layout { display: flex; min-height: 100vh; }
+.app-layout {
+  display: grid;
+  grid-template-columns: 228px minmax(0, 1fr);
+  min-height: 100vh;
+}
 
 /* ── Sidebar ── */
 .sidebar {
-  width: 228px;
+  width: auto;
   background: var(--surface);
   border-right: 1px solid var(--border);
   display: flex;
   flex-direction: column;
   padding: 1.5rem 1.1rem;
-  position: fixed;
-  top: 0; left: 0;
+  position: sticky;
+  top: 0;
   height: 100vh;
   z-index: 100;
   overflow-y: auto;
 }
+
 
 .sidebar-logo {
   display: flex;
@@ -506,7 +511,8 @@ a:hover { opacity: 0.65; text-decoration: none; }
 
 /* ── Main Content ── */
 .main-content {
-  margin-left: 228px;
+  margin-left: 0;
+  min-width: 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -565,6 +571,7 @@ a:hover { opacity: 0.65; text-decoration: none; }
 
 /* ── Feed Container ── */
 .feed-container {
+    min-width: 0;
   padding: 2rem;
   max-width: 820px;
 }
@@ -887,7 +894,8 @@ a:hover { opacity: 0.65; text-decoration: none; }
    ============================================================ */
 
 .create-layout {
-  margin-left: 228px;
+  margin-left: 0;
+  min-width: 0;
   display: flex;
   flex-direction: column;
 }
@@ -896,6 +904,7 @@ a:hover { opacity: 0.65; text-decoration: none; }
   max-width: 680px;
   padding: 2.25rem 2rem;
   width: 100%;
+  min-width: 0;
 }
 
 .create-header { margin-bottom: 1.75rem; }
@@ -1074,18 +1083,135 @@ a:hover { opacity: 0.65; text-decoration: none; }
   .auth-brand { display: none; }
   .auth-panel { width: 100%; padding: 3rem 2.25rem; }
 
-  .sidebar { width: 58px; padding: 1rem 0.55rem; }
+  .app-layout {
+    grid-template-columns: 72px minmax(0, 1fr);
+  }
+
+  .sidebar {
+    padding: 1rem 0.55rem;
+  }
+
   .sidebar-nav li a span:not(.nav-icon) { display: none; }
   .sidebar-brand-name { display: none; }
   .user-info { display: none; }
   .sidebar-logo { justify-content: center; }
 
-  .main-content, .create-layout { margin-left: 58px; }
   .form-row { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 700px) {
+  .app-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: static;
+    top: auto;
+    height: auto;
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    overflow: visible;
+    padding: 1rem;
+  }
+
+  .sidebar-logo {
+    justify-content: flex-start;
+    margin-bottom: 1rem;
+  }
+
+  .sidebar-brand-name,
+  .sidebar-nav li a span:not(.nav-icon),
+  .user-info {
+    display: inline;
+  }
+
+  .sidebar-user {
+    padding-top: 1rem;
+  }
+
+  .topbar {
+    height: auto;
+    min-height: 56px;
+    padding: 0.85rem 1rem;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .topbar-right {
+    width: 100%;
+  }
+
+  .btn-post {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 600px) {
   .auth-panel { padding: 2.5rem 1.5rem; }
-  .feed-container, .create-container { padding: 1.25rem; }
-  .topbar { padding: 0 1.25rem; }
+  .feed-container,
+  .create-container { padding: 1.25rem; }
+
+  .form-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .form-actions .btn-primary {
+    max-width: none;
+    width: 100%;
+  }
+
+  .form-actions .btn-ghost {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
+
+  .geo-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-top: 0.35rem;
+  }
+
+  .geo-note {
+    margin-bottom: 0;
+  }
+
+  .btn-secondary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--border);
+    background: var(--surface2);
+    color: var(--text);
+    border-radius: var(--radius);
+    font: inherit;
+    cursor: pointer;
+    transition: background var(--transition), border-color var(--transition), opacity var(--transition);
+  }
+
+  .btn-secondary:hover {
+    background: var(--accent-light);
+    border-color: var(--accent);
+  }
+
+  input[readonly] {
+    background: #f7f7f5;
+    color: var(--text-muted);
+    cursor: not-allowed;
+  }
+
+  @media (max-width: 600px) {
+    .geo-actions .btn-secondary {
+      width: 100%;
+    }
+  }
 }
