@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CivicReport — Dashboard Instituție</title>
+  <link rel="stylesheet" href="../generalStyles.css" />
+  <link rel="stylesheet" href="../institutionStyle.css" />
+</head>
+<body class="institution-body">
+  <div class="inst-layout">
+    <aside class="inst-sidebar">
+      <div class="inst-brand">
+        <div class="inst-brand-mark">CR</div>
+        <div>
+          <div class="inst-brand-title">CivicReport</div>
+          <div class="inst-brand-subtitle">Execuție instituție</div>
+        </div>
+      </div>
+
+      <div class="inst-user-card">
+        <div class="inst-avatar" id="instAvatar">IN</div>
+        <div class="inst-user-meta">
+          <div class="inst-user-name" id="institutionName">Instituție</div>
+          <div class="inst-user-role">Cont operațional</div>
+          <div class="inst-user-service" id="institutionService">Serviciu nedefinit</div>
+        </div>
+      </div>
+
+      <div class="inst-filter-card">
+        <div class="inst-filter-title">Filtrare operațională</div>
+        <div class="inst-filter-grid">
+          <div class="inst-filter-group">
+            <label for="statusFilter">Status</label>
+            <select id="statusFilter" class="inst-select">
+              <option value="">Toate</option>
+              <option value="Trimis">Trimis</option>
+              <option value="Preluat">Preluat</option>
+              <option value="In_Lucru">În lucru</option>
+              <option value="Rezolvat">Rezolvat</option>
+            </select>
+          </div>
+
+          <div class="inst-filter-group">
+            <label for="labelFilter">Etichetă</label>
+            <select id="labelFilter" class="inst-select">
+              <option value="">Toate etichetele</option>
+            </select>
+          </div>
+
+          <div class="inst-filter-group">
+            <label for="searchFilter">Căutare</label>
+            <input id="searchFilter" class="inst-input" type="text" placeholder="Nr. tichet, adresă, descriere" />
+          </div>
+
+          <div class="inst-filter-group">
+            <label for="sortFilter">Sortare</label>
+            <select id="sortFilter" class="inst-select">
+              <option value="ranking">Scor prioritate descrescător</option>
+              <option value="elapsed">Timp scurs descrescător</option>
+              <option value="newest">Cele mai noi</option>
+            </select>
+          </div>
+        </div>
+
+        <button class="btn btn-secondary" id="resetFiltersBtn" type="button">Resetare filtre</button>
+      </div>
+
+      <div class="inst-mobile-actions">
+        <button type="button" class="btn btn-secondary" id="mobileRefreshBtn">Reîmprospătează</button>
+        <button type="button" class="btn btn-ghost" id="mobileLogoutBtn">Logout</button>
+      </div>
+    </aside>
+
+    <main class="inst-main">
+      <header class="inst-topbar">
+        <div class="inst-topbar-head">
+          <div class="inst-topbar-copy">
+            <h1>Panou Execuție Instituție</h1>
+            <p>Vizualizezi doar tichetele atribuite instituției logate și poți actualiza fluxul de execuție direct din teren.</p>
+          </div>
+
+          <div class="inst-user-actions">
+            <button type="button" class="btn btn-secondary" id="refreshBtn">Reîmprospătează</button>
+            <button type="button" class="btn btn-ghost" id="logoutBtn">Logout</button>
+          </div>
+        </div>
+
+        <div class="inst-kpis">
+          <article class="inst-kpi">
+            <div class="inst-kpi-label">Tichete noi</div>
+            <div class="inst-kpi-value" id="newTicketsCount">0</div>
+            <div class="inst-kpi-note">Neprocesate</div>
+          </article>
+
+          <article class="inst-kpi">
+            <div class="inst-kpi-label">În execuție</div>
+            <div class="inst-kpi-value" id="workingTicketsCount">0</div>
+            <div class="inst-kpi-note">In Lucru</div>
+          </article>
+
+          <article class="inst-kpi flag">
+            <div class="inst-kpi-label">SLA depășit</div>
+            <div class="inst-kpi-value" id="slaTicketsCount">0</div>
+              <div class="inst-kpi-note">Necesită intervenție rapidă</div>
+          </article>
+        </div>
+      </header>
+
+      <section class="inst-content">
+        <div class="inst-table-card">
+          <div class="inst-table-head">
+            <div>
+              <h2>Tichete atribuite</h2>
+              <p class="inst-table-subtitle">Listă operativă sortată și filtrată după criteriile alese.</p>
+            </div>
+            <div class="inst-table-meta">
+              <span class="inst-chip" id="ticketCountChip">0 tichete afișate</span>
+              <span class="inst-chip" id="institutionAssignedChip">Instituție: —</span>
+            </div>
+          </div>
+
+          <div class="inst-table-wrap">
+            <table class="inst-table">
+              <thead>
+                <tr>
+                  <th>Nr. Tichet</th>
+                  <th>Etichetă</th>
+                  <th>Adresă</th>
+                  <th>Timp scurs</th>
+                  <th>Status</th>
+                  <th>Prioritate</th>
+                  <th>Acțiune</th>
+                </tr>
+              </thead>
+              <tbody id="institutionTicketBody"></tbody>
+            </table>
+          </div>
+
+          <div class="inst-empty inst-hidden" id="institutionEmptyState">
+            Nu există tichete care să corespundă filtrării curente.
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-overlay inst-modal" id="ticketModal">
+    <div class="inst-modal-box">
+      <div class="inst-modal-header">
+        <div class="inst-modal-topline">
+          <div class="inst-modal-title" id="modalTicketNo">#—</div>
+          <span class="status-badge status-sent" id="modalStatusBadge">—</span>
+          <span class="inst-chip" id="modalRankingChip">Scor —</span>
+          <button type="button" class="inst-close" id="closeModalBtn" aria-label="Închide">✕</button>
+        </div>
+        <div class="inst-modal-subtitle" id="modalHeaderText">—</div>
+      </div>
+
+      <div class="inst-modal-body">
+        <section class="inst-panel">
+          <h3>Vizualizare problemă</h3>
+          <div class="inst-before-grid">
+            <div class="inst-photo-box" id="beforePhotoBox"></div>
+            <div class="inst-detail-grid">
+              <div class="inst-detail-item">
+                <span class="inst-detail-label">Etichetă</span>
+                <span class="inst-detail-value" id="modalLabel">—</span>
+              </div>
+              <div class="inst-detail-item">
+                <span class="inst-detail-label">Adresă</span>
+                <span class="inst-detail-value" id="modalAddress">—</span>
+              </div>
+              <div class="inst-detail-item">
+                <span class="inst-detail-label">Coordonate GPS</span>
+                <span class="inst-detail-value" id="modalGps">—</span>
+              </div>
+              <div class="inst-detail-item">
+                <span class="inst-detail-label">Timp scurs</span>
+                <span class="inst-detail-value" id="modalElapsed">—</span>
+              </div>
+            </div>
+          </div>
+          <div class="inst-panel-note" id="modalDescription">—</div>
+        </section>
+
+        <section class="inst-panel">
+          <h3>Flux de lucru</h3>
+
+          <div class="inst-action-row">
+            <label class="inst-detail-label" for="internalNoteInput">Jurnal de activitate</label>
+            <textarea id="internalNoteInput" class="inst-textarea" placeholder="Ex: Echipa a plecat pe teren, s-au găsit materiale, zona a fost securizată."></textarea>
+            <button type="button" class="btn btn-secondary" id="saveJournalBtn">Salvează adnotarea</button>
+          </div>
+
+          <div class="inst-journal-list" id="journalList"></div>
+
+          <div class="inst-action-row">
+            <label class="inst-detail-label" for="refusalReasonInput">Acceptare / Refuz</label>
+            <div class="inst-action-buttons" id="acceptRejectActions">
+              <button type="button" class="btn btn-primary" id="acceptTicketBtn">Acceptă proiect</button>
+              <button type="button" class="btn btn-secondary" id="showRefuseBtn">Refuză</button>
+            </div>
+            <div class="inst-refusal-box" id="refusalBox">
+              <textarea id="refusalReasonInput" class="inst-textarea" placeholder="Motivul refuzului este obligatoriu."></textarea>
+              <div class="inst-action-buttons" style="margin-top:0.75rem;">
+                <button type="button" class="btn btn-secondary" id="cancelRefuseBtn">Renunță</button>
+                <button type="button" class="btn" style="background:#B04040;color:#fff;" id="confirmRefuseBtn">Confirmă refuzul</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="inst-upload-row">
+            <label class="inst-detail-label" for="afterPhotoInput">Fotografie „After”</label>
+            <input type="file" id="afterPhotoInput" class="inst-input" accept="image/*" />
+            <div class="inst-photo-box" id="afterPhotoPreview">
+              <div class="inst-photo-placeholder">Încarcă o imagine pentru a activa finalizarea tichetului.</div>
+            </div>
+            <div class="inst-finalize-note">Schimbarea statusului în <strong>Rezolvat</strong> necesită obligatoriu o fotografie „After”.</div>
+            <div class="inst-action-buttons">
+              <button type="button" class="btn btn-secondary" id="markInWorkBtn">Marchează „În lucru”</button>
+              <button type="button" class="btn btn-primary" id="resolveTicketBtn" disabled>Finalizează și marchează „Rezolvat”</button>
+            </div>
+          </div>
+
+          <div class="inst-upload-row">
+            <label class="inst-detail-label" for="pdfInput">Arhivă documente PDF</label>
+            <input type="file" id="pdfInput" class="inst-input" accept="application/pdf" multiple />
+            <button type="button" class="btn btn-secondary" id="uploadPdfBtn">Încarcă PDF</button>
+            <div class="inst-file-hint">Fișierele încărcate sunt vizibile doar pentru instituție și dispecer.</div>
+            <div class="inst-doc-list" id="pdfList"></div>
+          </div>
+
+          <div class="inst-upload-row">
+            <div class="inst-detail-label">Audit pregătit pentru SYSTEM_LOGS</div>
+            <div class="inst-log-preview" id="auditPreview"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="inst-modal-footer">
+        <div class="inst-footer-row">
+          <div class="inst-audit-note">Fiecare modificare păstrează actorul, timestamp-ul și diferența dintre vechi și nou.</div>
+          <button type="button" class="btn btn-ghost" id="closeFooterBtn">Închide</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="../js/mockDb.js"></script>
+  <script src="../js/institutionDash.js"></script>
+</body>
+</html>
