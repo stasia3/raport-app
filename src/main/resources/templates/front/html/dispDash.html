@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CivicReport — Dashboard Dispecer</title>
+    <link rel="stylesheet" href="generalStyles.css">
+    <link rel="stylesheet" href="../dispatcherStyle.css" />
+
+</head>
+<body>
+
+<!-- ============================================================
+     ONBOARDING OVERLAY (shown if no zone assigned)
+     ============================================================ -->
+<div class="onboard-overlay" id="onboardOverlay" style="display:none">
+    <div class="onboard-box">
+        <div style="width:38px;height:38px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
+            <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+        </div>
+        <h2>Selectați Zona Operațională</h2>
+        <p>Contul dvs. de dispecer nu are o zonă atribuită. Selectați județul sau sectorul pe care îl veți gestiona pentru a continua.</p>
+        <select class="onboard-select" id="onboardSelect">
+            <option value="">— Selectați Județul / Sectorul —</option>
+            <optgroup label="Municipiul București">
+                <option value="Sector 1">Sector 1</option>
+                <option value="Sector 2">Sector 2</option>
+                <option value="Sector 3">Sector 3</option>
+                <option value="Sector 4">Sector 4</option>
+                <option value="Sector 5">Sector 5</option>
+                <option value="Sector 6">Sector 6</option>
+            </optgroup>
+            <optgroup label="Județe">
+                <option value="Alba">Alba</option>
+                <option value="Arad">Arad</option>
+                <option value="Argeș">Argeș</option>
+                <option value="Bacău">Bacău</option>
+                <option value="Bihor">Bihor</option>
+                <option value="Bistrița-Năsăud">Bistrița-Năsăud</option>
+                <option value="Botoșani">Botoșani</option>
+                <option value="Brăila">Brăila</option>
+                <option value="Brașov">Brașov</option>
+                <option value="Buzău">Buzău</option>
+                <option value="Călărași">Călărași</option>
+                <option value="Caraș-Severin">Caraș-Severin</option>
+                <option value="Cluj">Cluj</option>
+                <option value="Constanța">Constanța</option>
+                <option value="Covasna">Covasna</option>
+                <option value="Dâmbovița">Dâmbovița</option>
+                <option value="Dolj">Dolj</option>
+                <option value="Galați">Galați</option>
+                <option value="Giurgiu">Giurgiu</option>
+                <option value="Gorj">Gorj</option>
+                <option value="Harghita">Harghita</option>
+                <option value="Hunedoara">Hunedoara</option>
+                <option value="Ialomița">Ialomița</option>
+                <option value="Iași">Iași</option>
+                <option value="Ilfov">Ilfov</option>
+                <option value="Maramureș">Maramureș</option>
+                <option value="Mehedinți">Mehedinți</option>
+                <option value="Mureș">Mureș</option>
+                <option value="Neamț">Neamț</option>
+                <option value="Olt">Olt</option>
+                <option value="Prahova">Prahova</option>
+                <option value="Sălaj">Sălaj</option>
+                <option value="Satu Mare">Satu Mare</option>
+                <option value="Sibiu">Sibiu</option>
+                <option value="Suceava">Suceava</option>
+                <option value="Teleorman">Teleorman</option>
+                <option value="Timiș">Timiș</option>
+                <option value="Tulcea">Tulcea</option>
+                <option value="Vâlcea">Vâlcea</option>
+                <option value="Vaslui">Vaslui</option>
+                <option value="Vrancea">Vrancea</option>
+            </optgroup>
+        </select>
+        <button class="btn btn-primary" onclick="saveZone()">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg>
+            Confirmați Zona
+        </button>
+    </div>
+</div>
+
+<!-- ============================================================
+     MAIN DASHBOARD LAYOUT
+     ============================================================ -->
+<div class="dash-root">
+
+    <!-- Top Command Bar -->
+    <header class="cmd-bar">
+        <div class="cmd-logo">
+            <div class="cmd-mark">CR</div>
+            <span class="cmd-brand">CivicReport</span>
+        </div>
+        <div class="cmd-divider"></div>
+
+        <div class="cmd-zone-badge">
+            <svg class="zone-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+            <span class="cmd-zone-label">Zonă:</span>
+            <span id="cmd-zone-name">—</span>
+        </div>
+
+        <div class="cmd-divider"></div>
+
+        <div class="red-flag-counter" title="Tichete cu timp de așteptare depășit">
+            <div class="red-flag-dot"></div>
+            <span class="red-flag-label">Timp depășit:</span>
+            <span id="red-flag-count">0</span>
+        </div>
+
+        <div class="cmd-spacer"></div>
+        <span class="cmd-time" id="cmd-clock">—</span>
+        <div class="cmd-divider"></div>
+
+        <div class="cmd-user">
+            <div class="cmd-avatar" id="cmd-avatar">D</div>
+            <span class="cmd-user-name" id="cmd-user-name">Dispecer</span>
+        </div>
+        <button class="btn btn-ghost" onclick="logout()" style="font-size:0.73rem;padding:4px 10px;">
+            Deconectare
+        </button>
+    </header>
+
+    <!-- Filters Sidebar -->
+    <aside class="filters-panel">
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-card-num" id="stat-total">0</div>
+                <div class="stat-card-label">Total</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-num" id="stat-urgent" style="color:var(--danger)">0</div>
+                <div class="stat-card-label">Urgente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-num" id="stat-hotspot" style="color:#C97424">0</div>
+                <div class="stat-card-label">Hotspot</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-card-num" id="stat-pending" style="color:var(--s-disp)">0</div>
+                <div class="stat-card-label">Neatribuite</div>
+            </div>
+        </div>
+
+        <div class="filter-sep"></div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Etichetă problemă</div>
+            <select class="filter-select" id="filter-tag" onchange="applyFilters()">
+                <option value="">Toate etichetele</option>
+                <option value="Groapă">Groapă / Pavaj</option>
+                <option value="Iluminat">Iluminat stradal</option>
+                <option value="Gunoi">Gunoi / Salubritate</option>
+                <option value="Copac">Copac / Spații verzi</option>
+                <option value="Canalizare">Canalizare / Apă</option>
+                <option value="Vandalism">Vandalism</option>
+                <option value="Trafic">Semaforizare / Trafic</option>
+                <option value="Alte">Alte</option>
+            </select>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Scor minim</div>
+            <div class="slider-row">
+                <input type="range" id="filter-score" min="0" max="100" value="0" oninput="document.getElementById('score-val').textContent=this.value;applyFilters()">
+                <span class="slider-val" id="score-val">0</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Alertă stradă</div>
+            <div class="filter-num-row">
+                <span class="filter-num-label">Tichete &gt;</span>
+                <input type="number" class="filter-num-input" id="filter-street-n" value="3" min="1" max="50" onchange="applyFilters()">
+                <span class="filter-num-label">per stradă</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <div class="filter-section-title">Status</div>
+            <select class="filter-select" id="filter-status" onchange="applyFilters()">
+                <option value="">Toate statusurile</option>
+                <option value="pending">În așteptare</option>
+                <option value="assigned">Atribuit</option>
+                <option value="duplicate">Duplicat</option>
+            </select>
+        </div>
+
+        <div class="filter-sep"></div>
+
+        <button class="btn btn-secondary" style="font-size:0.78rem;width:100%;justify-content:center;" onclick="resetFilters()">
+            <svg width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            Resetare filtre
+        </button>
+
+    </aside>
+
+    <!-- Main Ticket Area -->
+    <main class="ticket-area">
+
+        <!-- Street alert banner -->
+        <div class="street-alert-banner" id="street-alert-banner">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <span id="street-alert-text">—</span>
+        </div>
+
+        <div class="ticket-topbar">
+            <h2>Coadă Priorități</h2>
+            <span class="ticket-count-badge" id="visible-count">0 tichete</span>
+            <div class="ticket-topbar-right">
+                <span class="sort-label">Sortare:</span>
+                <select class="sort-select" id="sort-select" onchange="renderTable()">
+                    <option value="score">Scor ↓</option>
+                    <option value="time">Timp ↓</option>
+                    <option value="flag">Urgente primele</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="ticket-scroll">
+            <table class="ticket-table">
+                <thead>
+                <tr>
+                    <th>Nr. Tichet</th>
+                    <th>Scor</th>
+                    <th>Etichetă</th>
+                    <th>Stradă</th>
+                    <th>Depus</th>
+                    <th>Status</th>
+                    <th>Flag</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody id="ticket-tbody"></tbody>
+            </table>
+            <div class="empty-state" id="empty-state" style="display:none">
+                <p>Niciun tichet nu corespunde filtrelor selectate.</p>
+            </div>
+        </div>
+
+    </main>
+</div>
+
+<!-- ============================================================
+     TICKET MODAL
+     ============================================================ -->
+<div class="modal-overlay" id="ticketModal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <span class="modal-ticket-num" id="modal-ticket-num">#—</span>
+            <div class="modal-score-tag">
+                Scor prioritate: <strong id="modal-score">—</strong>
+            </div>
+            <span class="status-badge status-dispatcher" id="modal-status-badge">—</span>
+            <button class="modal-close" onclick="closeModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Photo Before -->
+            <div class="modal-photo-wrap" id="modal-photo-wrap">
+                <span class="modal-photo-label">Fotografie Before</span>
+                <div class="modal-photo-placeholder">Nicio fotografie atașată</div>
+            </div>
+
+            <!-- Details -->
+            <div class="modal-details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Etichetă problemă</span>
+                    <span class="detail-value" id="modal-tag">—</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Locație</span>
+                    <span class="detail-value" id="modal-location">—</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Coordonate GPS</span>
+                    <span class="detail-value mono" id="modal-coords">—</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Data sesizării</span>
+                    <span class="detail-value" id="modal-date">—</span>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="modal-description" id="modal-desc">—</div>
+
+            <!-- Anti-discrimination notice -->
+            <div class="antidisc-notice">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                Informațiile de identitate ale cetățeanului sunt ascunse. Se afișează doar numărul tichetului și scorul de prioritate.
+            </div>
+
+            <!-- Actions -->
+            <div class="modal-actions-section">
+                <div class="modal-actions-title">Acțiuni Dispecer</div>
+
+                <div class="action-row">
+                    <span class="action-label">Corectare etichetă:</span>
+                    <select class="action-select" id="action-tag">
+                        <option value="">— Păstrați eticheta actuală —</option>
+                        <option value="Groapă">Groapă / Pavaj</option>
+                        <option value="Iluminat">Iluminat stradal</option>
+                        <option value="Gunoi">Gunoi / Salubritate</option>
+                        <option value="Copac">Copac / Spații verzi</option>
+                        <option value="Canalizare">Canalizare / Apă</option>
+                        <option value="Vandalism">Vandalism</option>
+                        <option value="Trafic">Semaforizare / Trafic</option>
+                        <option value="Alte">Alte</option>
+                    </select>
+                </div>
+
+                <div class="action-row">
+                    <span class="action-label">Atribuire instituție:</span>
+                    <select class="action-select" id="action-institution">
+                        <option value="">— Selectați instituția —</option>
+                        <optgroup label="Infrastructură">
+                            <option value="Primărie — Serviciu Tehnic">Primărie — Serviciu Tehnic</option>
+                            <option value="RADP — Reparații Drumuri">RADP — Reparații Drumuri</option>
+                            <option value="Regia Drumurilor">Regia Drumurilor</option>
+                        </optgroup>
+                        <optgroup label="Utilități">
+                            <option value="Electrica — Iluminat Public">Electrica — Iluminat Public</option>
+                            <option value="ApaVital — Rețea Apă-Canal">ApaVital — Rețea Apă-Canal</option>
+                            <option value="GazMet — Distribuție Gaz">GazMet — Distribuție Gaz</option>
+                        </optgroup>
+                        <optgroup label="Salubritate">
+                            <option value="Serviciu Salubritate Municipal">Serviciu Salubritate Municipal</option>
+                            <option value="EcoSal — Colectare Deșeuri">EcoSal — Colectare Deșeuri</option>
+                        </optgroup>
+                        <optgroup label="Ordine Publică">
+                            <option value="Poliția Locală">Poliția Locală</option>
+                            <option value="Poliția Rutieră">Poliția Rutieră</option>
+                        </optgroup>
+                        <optgroup label="Spații Verzi">
+                            <option value="Serviciu Spații Verzi">Serviciu Spații Verzi</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div style="display:flex;flex-direction:column;gap:6px;">
+                    <span class="action-label">Marcare duplicat:</span>
+                    <div class="duplicate-row">
+                        <input type="text" class="duplicate-input" id="dup-id-input" placeholder="Introduceți nr. tichet principal (ex: #TK-0042)">
+                        <button class="btn-danger" onclick="markDuplicate()">Marchează Duplicat</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <span class="modal-footer-note">Acțiunea va fi înregistrată în SYSTEM_LOGS cu timestamp și ID dispecer.</span>
+            <button class="btn-submit" onclick="submitAction()">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+                TRIMITE
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toast-container"></div>
+
+<!--DE SCOS CAND INTEGREZI!!!!-->
+<script src="../js/mockDb.js"></script>
+
+
+<script>
+    /* ============================================================
+       DATA LAYER — Simulated Tables
+       ============================================================ */
+
+    // Simulated USERS table
+    const USERS = [
+      { id: 1, email: 'dispecer@civic.ro', password_hash: 'hash_disp_1', user_role: 'Dispatcher', name: 'Maria Ionescu' },
+      { id: 2, email: 'admin@civic.ro',    password_hash: 'hash_admin_1', user_role: 'Admin', name: 'Andrei Popescu' },
+    ];
+
+    // Simulated DISPATCHER table
+    const DISPATCHER_TABLE = [
+      { user_id: 1, assigned_zone: null }, // null = needs onboarding
+    ];
+
+    // Simulated POSTS/TICKETS
+    const ALL_TICKETS = [
+      { id: 1,  ticket_number: 'TK-0001', county_sector: 'Galați', problem_tag: 'Groapă',    ranking_score: 87, is_red_flag: true,  street: 'Str. Brăilei',      location: 'Str. Brăilei nr. 12', gps_lat: 45.4354, gps_long: 28.0500, description: 'Groapă adâncă de aproximativ 40cm în carosabil, periculoasă pentru vehicule.', status: 'pending',  created_at: new Date(Date.now() - 3*3600000) },
+      { id: 2,  ticket_number: 'TK-0002', county_sector: 'Galați', problem_tag: 'Iluminat',  ranking_score: 72, is_red_flag: false, street: 'Str. Brăilei',      location: 'Str. Brăilei nr. 34', gps_lat: 45.4358, gps_long: 28.0505, description: 'Stâlp de iluminat nefuncțional de 2 săptămâni. Zona este periculoasă noaptea.', status: 'pending',  created_at: new Date(Date.now() - 26*3600000) },
+      { id: 3,  ticket_number: 'TK-0003', county_sector: 'Galați', problem_tag: 'Groapă',    ranking_score: 81, is_red_flag: true,  street: 'Str. Brăilei',      location: 'Str. Brăilei nr. 8',  gps_lat: 45.4350, gps_long: 28.0498, description: 'Alt sector deteriorat pe același tronson. Trotuarul este complet spart.', status: 'pending',  created_at: new Date(Date.now() - 5*3600000) },
+      { id: 4,  ticket_number: 'TK-0004', county_sector: 'Galați', problem_tag: 'Gunoi',     ranking_score: 45, is_red_flag: false, street: 'Bd. George Coșbuc', location: 'Bd. G. Coșbuc bl. A3', gps_lat: 45.4400, gps_long: 28.0450, description: 'Pubele supraaglomerate, gunoi aruncat pe trotuar în fața blocului.', status: 'pending',  created_at: new Date(Date.now() - 8*3600000) },
+      { id: 5,  ticket_number: 'TK-0005', county_sector: 'Galați', problem_tag: 'Canalizare', ranking_score: 93, is_red_flag: true,  street: 'Str. Tecuci',       location: 'Str. Tecuci nr. 5',   gps_lat: 45.4420, gps_long: 28.0480, description: 'Capac de canalizare lipsă. Pericol iminent de accidente, mai ales pentru bicicliști.', status: 'pending',  created_at: new Date(Date.now() - 1*3600000) },
+      { id: 6,  ticket_number: 'TK-0006', county_sector: 'Galați', problem_tag: 'Groapă',    ranking_score: 78, is_red_flag: false, street: 'Str. Brăilei',      location: 'Str. Brăilei nr. 56', gps_lat: 45.4362, gps_long: 28.0510, description: 'Pavaj deformat în dreptul trecerii de pietoni.', status: 'pending',  created_at: new Date(Date.now() - 12*3600000) },
+      { id: 7,  ticket_number: 'TK-0007', county_sector: 'Galați', problem_tag: 'Copac',     ranking_score: 38, is_red_flag: false, street: 'Str. Sf. Apostoli',  location: 'Str. Sf. Apostoli 22', gps_lat: 45.4380, gps_long: 28.0520, description: 'Copac cu crengă ruptă ce atârnă deasupra trotuarului public.', status: 'assigned', created_at: new Date(Date.now() - 48*3600000) },
+      { id: 8,  ticket_number: 'TK-0008', county_sector: 'Galați', problem_tag: 'Vandalism',  ranking_score: 55, is_red_flag: false, street: 'Bd. Independenței', location: 'Bd. Independenței 101', gps_lat: 45.4390, gps_long: 28.0530, description: 'Bancă din parc vandalizată, componente metalice rupte constituie pericol.', status: 'pending',  created_at: new Date(Date.now() - 18*3600000) },
+      { id: 9,  ticket_number: 'TK-0009', county_sector: 'Galați', problem_tag: 'Trafic',    ranking_score: 66, is_red_flag: false, street: 'Str. Tecuci',       location: 'Int. Str. Tecuci / Bd. Independenței', gps_lat: 45.4415, gps_long: 28.0475, description: 'Semafor defect, funcționează doar pe culoarea verde în ambele direcții.', status: 'pending',  created_at: new Date(Date.now() - 6*3600000) },
+      { id: 10, ticket_number: 'TK-0010', county_sector: 'Galați', problem_tag: 'Iluminat',  ranking_score: 69, is_red_flag: true,  street: 'Str. Domnească',    location: 'Str. Domnească nr. 47', gps_lat: 45.4440, gps_long: 28.0440, description: '3 stâlpi consecutivi nefuncționali. Zona comercială fără iluminat.', status: 'pending',  created_at: new Date(Date.now() - 31*3600000) },
+    ];
+
+    /* ============================================================
+       STATE
+       ============================================================ */
+    let currentUser = null;
+    let currentDispatcher = null;
+    let filteredTickets = [];
+    let selectedTicketId = null;
+
+    /* ============================================================
+       INIT
+       ============================================================ */
+<!--    document.addEventListener('DOMContentLoaded', () => {-->
+<!--      // Check session-->
+<!--      const session = JSON.parse(sessionStorage.getItem('cr_session') || 'null');-->
+<!--      if (!session || session.user_role !== 'Dispatcher') {-->
+<!--        // Redirect to login for demo; show onboarding instead-->
+<!--        // In real app: window.location.href = 'index.html';-->
+<!--        // For demo: auto-login-->
+<!--        currentUser = USERS[0];-->
+<!--        currentDispatcher = DISPATCHER_TABLE.find(d => d.user_id === currentUser.id);-->
+<!--        sessionStorage.setItem('cr_session', JSON.stringify({-->
+<!--          user_id: currentUser.id,-->
+<!--          user_role: currentUser.user_role,-->
+<!--          name: currentUser.name-->
+<!--        }));-->
+<!--      } else {-->
+<!--        currentUser = USERS.find(u => u.id === session.user_id) || USERS[0];-->
+<!--        currentDispatcher = DISPATCHER_TABLE.find(d => d.user_id === currentUser.id);-->
+<!--      }-->
+
+document.addEventListener('DOMContentLoaded', () => {
+  const session = JSON.parse(sessionStorage.getItem('cr_session') || 'null');
+
+  if (!session || session.user_role !== 'Dispatcher') {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  currentUser = {
+    id: session.user_id || session.id,
+    user_role: session.user_role,
+    name: session.display_name || session.profile?.full_name || 'Dispecer'
+  };
+
+  currentDispatcher = {
+    user_id: session.user_id || session.id,
+    assigned_zone: session.assigned_zone ?? session.profile?.assigned_zone ?? null
+  };
+
+  if (window.MockDB && currentDispatcher.assigned_zone) {
+    ALL_TICKETS.length = 0;
+    ALL_TICKETS.push(...window.MockDB.getDispatcherTicketsByZone(currentDispatcher.assigned_zone));
+  }
+
+  updateCmdBar();
+  startClock();
+
+  if (!currentDispatcher.assigned_zone) {
+    document.getElementById('onboardOverlay').style.display = 'flex';
+  } else {
+    initDashboard();
+  }
+});
+
+      updateCmdBar();
+      startClock();
+
+      // Check zone
+      if (!currentDispatcher || currentDispatcher.assigned_zone === null) {
+        document.getElementById('onboardOverlay').style.display = 'flex';
+      } else {
+        initDashboard();
+      }
+    });
+
+    function updateCmdBar() {
+      if (!currentUser) return;
+      const initials = currentUser.name.split(' ').map(n=>n[0]).join('').slice(0,2);
+      document.getElementById('cmd-avatar').textContent = initials;
+      document.getElementById('cmd-user-name').textContent = currentUser.name;
+    }
+
+    function startClock() {
+      const el = document.getElementById('cmd-clock');
+      const update = () => {
+        const now = new Date();
+        el.textContent = now.toLocaleTimeString('ro-RO', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+      };
+      update();
+      setInterval(update, 1000);
+    }
+
+    function initDashboard() {
+      const zone = currentDispatcher?.assigned_zone || '—';
+      document.getElementById('cmd-zone-name').textContent = zone;
+      loadTickets();
+    }
+
+    /* ============================================================
+       ONBOARDING
+       ============================================================ */
+<!--    function saveZone() {-->
+<!--      const sel = document.getElementById('onboardSelect');-->
+<!--      if (!sel.value) {-->
+<!--        showToast('Selectați o zonă pentru a continua.', 'error');-->
+<!--        return;-->
+<!--      }-->
+<!--      // Save to DISPATCHER table-->
+<!--      if (currentDispatcher) {-->
+<!--        currentDispatcher.assigned_zone = sel.value;-->
+<!--      }-->
+<!--      showToast(`Zonă atribuită: ${sel.value}`, 'success');-->
+<!--      document.getElementById('onboardOverlay').style.display = 'none';-->
+
+<!--      // Log action-->
+<!--      logAction('ZONE_ASSIGNED', null, { zone: sel.value });-->
+<!--      initDashboard();-->
+<!--    }-->
+
+function saveZone() {
+  const sel = document.getElementById('onboardSelect');
+
+  if (!sel.value) {
+    showToast('Selectați o zonă pentru a continua.', 'error');
+    return;
+  }
+
+  const session = JSON.parse(sessionStorage.getItem('cr_session') || 'null');
+  if (!session) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  if (window.MockDB) {
+    const updatedDispatcher = window.MockDB.saveDispatcherZone(session.user_id || session.id, sel.value);
+
+    session.assigned_zone = sel.value;
+    if (session.profile) {
+      session.profile.assigned_zone = sel.value;
+    }
+
+    sessionStorage.setItem('cr_session', JSON.stringify(session));
+
+    currentDispatcher = updatedDispatcher || {
+      user_id: session.user_id || session.id,
+      assigned_zone: sel.value
+    };
+
+    ALL_TICKETS.length = 0;
+    ALL_TICKETS.push(...window.MockDB.getDispatcherTicketsByZone(sel.value));
+  } else {
+    currentDispatcher.assigned_zone = sel.value;
+  }
+
+  showToast(`Zonă atribuită: ${sel.value}`, 'success');
+  document.getElementById('onboardOverlay').style.display = 'none';
+  initDashboard();
+}
+
+    /* ============================================================
+       TICKET LOADING & FILTERING
+       ============================================================ */
+    function loadTickets() {
+      const zone = currentDispatcher?.assigned_zone;
+      // Filter by zone
+      filteredTickets = ALL_TICKETS.filter(t => t.county_sector === zone);
+      computeHotspots();
+      updateStats();
+      renderTable();
+      checkStreetAlert();
+    }
+
+    // Compute hotspot: tickets with same problem_tag within ~50m radius (simplified by street)
+    function computeHotspots() {
+      filteredTickets.forEach(t => { t._hotspot = false; t._hotspot_count = 0; });
+
+      for (let i = 0; i < filteredTickets.length; i++) {
+        let nearby = filteredTickets.filter((t2, j) => {
+          if (j === i) return false;
+          if (t2.problem_tag !== filteredTickets[i].problem_tag) return false;
+          const dlat = (t2.gps_lat - filteredTickets[i].gps_lat) * 111000;
+          const dlng = (t2.gps_long - filteredTickets[i].gps_long) * 111000 * Math.cos(filteredTickets[i].gps_lat * Math.PI/180);
+          return Math.sqrt(dlat*dlat + dlng*dlng) <= 50;
+        });
+        if (nearby.length > 0) {
+          filteredTickets[i]._hotspot = true;
+          filteredTickets[i]._hotspot_count = nearby.length + 1;
+        }
+      }
+    }
+
+    function applyFilters() {
+      const tag = document.getElementById('filter-tag').value;
+      const minScore = parseInt(document.getElementById('filter-score').value);
+      const status = document.getElementById('filter-status').value;
+
+      const zone = currentDispatcher?.assigned_zone;
+      let list = ALL_TICKETS.filter(t => t.county_sector === zone);
+
+      if (tag)    list = list.filter(t => t.problem_tag === tag);
+      if (minScore > 0) list = list.filter(t => t.ranking_score >= minScore);
+      if (status) list = list.filter(t => t.status === status);
+
+      filteredTickets = list;
+      computeHotspots();
+      updateStats();
+      renderTable();
+      checkStreetAlert();
+    }
+
+    function resetFilters() {
+      document.getElementById('filter-tag').value = '';
+      document.getElementById('filter-score').value = 0;
+      document.getElementById('score-val').textContent = '0';
+      document.getElementById('filter-status').value = '';
+      document.getElementById('filter-street-n').value = 3;
+      applyFilters();
+    }
+
+    function checkStreetAlert() {
+      const n = parseInt(document.getElementById('filter-street-n').value) || 3;
+      const streetCounts = {};
+      filteredTickets.forEach(t => {
+        streetCounts[t.street] = (streetCounts[t.street] || 0) + 1;
+      });
+      const alerts = Object.entries(streetCounts).filter(([,c]) => c > n).map(([s,c]) => `${s} (${c})`);
+      const banner = document.getElementById('street-alert-banner');
+      const alertText = document.getElementById('street-alert-text');
+      if (alerts.length) {
+        banner.classList.add('visible');
+        alertText.innerHTML = `<strong>Alertă:</strong> Străzi cu mai mult de ${n} tichete: ${alerts.join(', ')}`;
+      } else {
+        banner.classList.remove('visible');
+      }
+    }
+
+    function updateStats() {
+      const zone = currentDispatcher?.assigned_zone;
+      const all = ALL_TICKETS.filter(t => t.county_sector === zone);
+      document.getElementById('stat-total').textContent   = all.length;
+      document.getElementById('stat-urgent').textContent  = all.filter(t => t.is_red_flag).length;
+      document.getElementById('stat-hotspot').textContent = all.filter(t => t._hotspot).length;
+      document.getElementById('stat-pending').textContent = all.filter(t => t.status === 'pending').length;
+      document.getElementById('red-flag-count').textContent = all.filter(t => t.is_red_flag).length;
+    }
+
+    /* ============================================================
+       TABLE RENDERING
+       ============================================================ */
+    function renderTable() {
+      const sort = document.getElementById('sort-select').value;
+      let list = [...filteredTickets];
+
+      if (sort === 'score') list.sort((a,b) => b.ranking_score - a.ranking_score);
+      else if (sort === 'time') list.sort((a,b) => a.created_at - b.created_at);
+      else if (sort === 'flag') list.sort((a,b) => (b.is_red_flag?1:0) - (a.is_red_flag?1:0) || b.ranking_score - a.ranking_score);
+
+      const tbody = document.getElementById('ticket-tbody');
+      const empty = document.getElementById('empty-state');
+
+      if (!list.length) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        document.getElementById('visible-count').textContent = '0 tichete';
+        return;
+      }
+      empty.style.display = 'none';
+      document.getElementById('visible-count').textContent = `${list.length} tichet${list.length !== 1 ? 'e' : ''}`;
+
+      tbody.innerHTML = list.map(t => {
+        const rowClass = t._hotspot ? 'ticket-row row-hotspot' : t.is_red_flag ? 'ticket-row row-redflag' : 'ticket-row';
+        const scoreClass = t.ranking_score >= 80 ? 'score-high' : t.ranking_score >= 55 ? 'score-mid' : 'score-low';
+        const timeAgo = formatTimeAgo(t.created_at);
+        const isOverdue = (Date.now() - t.created_at) > 24*3600000;
+
+        const hotspotHtml = t._hotspot
+          ? `<div class="hotspot-badge">🔥 Hotspot · ${t._hotspot_count} similare</div>`
+          : '';
+
+        const tagHtml = `<span class="tag-chip">${t.problem_tag}</span>`;
+        const statusHtml = `<span class="status-badge ${t.status === 'assigned' ? 'status-sent' : 'status-dispatcher'}">${t.status === 'assigned' ? 'Atribuit' : 'În așteptare'}</span>`;
+        const flagHtml = t.is_red_flag ? `<span class="row-flag-icon"><svg width="11" height="11" fill="var(--danger)" viewBox="0 0 24 24"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15" stroke="var(--danger)" stroke-width="2"/></svg> Urgentă</span>` : '<span style="color:var(--text-dim);font-size:0.71rem;">—</span>';
+
+        return `<tr class="${rowClass}" onclick="openModal(${t.id})">
+          <td><span class="ticket-num">#${t.ticket_number}</span></td>
+          <td><span class="score-badge ${scoreClass}">${t.ranking_score}</span></td>
+          <td>
+            <div style="display:flex;flex-direction:column;gap:4px;">
+              ${tagHtml}
+              ${hotspotHtml}
+              ${t._hotspot ? `<div style="font-size:0.62rem;color:#C97424;font-weight:300;">Pondere crescută: ${t._hotspot_count} sesizări similare în zonă</div>` : ''}
+            </div>
+          </td>
+          <td><span class="location-text">${t.street}</span></td>
+          <td><span class="time-text ${isOverdue ? 'time-overdue' : ''}">${timeAgo}${isOverdue ? ' ⚠' : ''}</span></td>
+          <td>${statusHtml}</td>
+          <td>${flagHtml}</td>
+          <td><button class="action-open" onclick="event.stopPropagation();openModal(${t.id})">Deschide →</button></td>
+        </tr>`;
+      }).join('');
+    }
+
+    function formatTimeAgo(date) {
+      const diff = Date.now() - date;
+      const h = Math.floor(diff / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      if (h >= 24) return `${Math.floor(h/24)}z ${h%24}h`;
+      if (h > 0)   return `${h}h ${m}m`;
+      return `${m}m`;
+    }
+
+    /* ============================================================
+       MODAL
+       ============================================================ */
+    function openModal(ticketId) {
+      const t = ALL_TICKETS.find(x => x.id === ticketId);
+      if (!t) return;
+      selectedTicketId = ticketId;
+
+      document.getElementById('modal-ticket-num').textContent = `#${t.ticket_number}`;
+      document.getElementById('modal-score').textContent = t.ranking_score;
+      document.getElementById('modal-tag').textContent = t.problem_tag;
+      document.getElementById('modal-location').textContent = t.location;
+      document.getElementById('modal-coords').textContent = `${t.gps_lat.toFixed(5)}, ${t.gps_long.toFixed(5)}`;
+      document.getElementById('modal-date').textContent = t.created_at.toLocaleString('ro-RO');
+      document.getElementById('modal-desc').textContent = t.description;
+
+      // Status badge
+      const badge = document.getElementById('modal-status-badge');
+      badge.className = `status-badge ${t.is_red_flag ? 'status-action' : 'status-dispatcher'}`;
+      badge.textContent = t.is_red_flag ? '⚑ Urgentă' : 'În așteptare';
+
+      // Reset action inputs
+      document.getElementById('action-tag').value = '';
+      document.getElementById('action-institution').value = '';
+      document.getElementById('dup-id-input').value = '';
+
+      document.getElementById('ticketModal').classList.add('open');
+    }
+
+    function closeModal() {
+      document.getElementById('ticketModal').classList.remove('open');
+      selectedTicketId = null;
+    }
+
+    function markDuplicate() {
+      const dupId = document.getElementById('dup-id-input').value.trim();
+      if (!dupId) {
+        showToast('Introduceți numărul tichetului principal.', 'error');
+        return;
+      }
+      const t = ALL_TICKETS.find(x => x.id === selectedTicketId);
+      if (!t) return;
+      t.status = 'duplicate';
+      logAction('MARKED_DUPLICATE', selectedTicketId, { duplicate_of: dupId });
+      showToast(`Tichetul #${t.ticket_number} marcat ca duplicat al ${dupId}.`, 'info');
+      closeModal();
+      loadTickets();
+    }
+
+    function submitAction() {
+      const t = ALL_TICKETS.find(x => x.id === selectedTicketId);
+      if (!t) return;
+
+      const newTag = document.getElementById('action-tag').value;
+      const institution = document.getElementById('action-institution').value;
+
+      if (!institution) {
+        showToast('Selectați o instituție pentru atribuire.', 'error');
+        return;
+      }
+
+      if (newTag) t.problem_tag = newTag;
+      t.status = 'assigned';
+
+      logAction('TICKET_DISPATCHED', selectedTicketId, {
+        institution,
+        tag_corrected: newTag || null,
+      });
+
+      showToast(`Tichetul #${t.ticket_number} trimis către ${institution}.`, 'success');
+      closeModal();
+      loadTickets();
+    }
+
+    /* ============================================================
+       SYSTEM LOGS
+       ============================================================ */
+    const SYSTEM_LOGS = [];
+    function logAction(action_type, ticket_id, details = {}) {
+      const entry = {
+        id: SYSTEM_LOGS.length + 1,
+        timestamp: new Date().toISOString(),
+        dispatcher_id: currentUser?.id,
+        dispatcher_name: currentUser?.name,
+        action_type,
+        ticket_id,
+        details,
+      };
+      SYSTEM_LOGS.push(entry);
+      console.log('[SYSTEM_LOG]', entry);
+    }
+
+    /* ============================================================
+       TOAST
+       ============================================================ */
+    function showToast(msg, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const el = document.createElement('div');
+      el.className = `toast ${type}`;
+      el.innerHTML = `<span>${msg}</span>`;
+      container.appendChild(el);
+      setTimeout(() => el.remove(), 3800);
+    }
+
+    /* ============================================================
+       AUTH
+       ============================================================ */
+    function logout() {
+      sessionStorage.removeItem('cr_session');
+      showToast('Deconectat cu succes.', 'info');
+      setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+    }
+
+    // Close modal on overlay click
+    document.getElementById('ticketModal').addEventListener('click', function(e) {
+      if (e.target === this) closeModal();
+    });
+</script>
+</body>
+</html>

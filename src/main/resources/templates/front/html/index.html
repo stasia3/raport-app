@@ -4,7 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CivicReport — Login</title>
-    <link rel="stylesheet" href="../styles.css" />
+  <link rel="stylesheet" href="../generalStyles.css" />
+
 </head>
 <body>
 
@@ -48,7 +49,8 @@
         <p>Intră în cont pentru a raporta sau urmări problemele tale.</p>
       </div>
 
-      <form action="feed.html" method="get" novalidate>
+<!--      <form action="feed.html" method="get" novalidate>-->
+        <form id="loginForm" novalidate>
 
         <div class="form-group">
           <label for="email">Email</label>
@@ -79,6 +81,7 @@
         </div>
 
         <button type="submit" class="btn btn-primary">Login</button>
+            <p id="loginError" class="login-error" style="display:none;"></p>
 
       </form>
 
@@ -89,5 +92,8 @@
 
   </div>
 
+<!--  DE SCOS SCRIPTURILE CAND IMPLEMENTEZI!!!-->
+  <script src="../js/mockDb.js"></script>
+  <script src="../js/loginRouting.js"></script>
 </body>
 </html>
