@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Institutions</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Institutions</h1>
+
+    <a th:href="@{/institutions/new}" class="btn btn-add">Add Institution</a>
+    <a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>Official Name</th>
+            <th>Fiscal Code</th>
+            <th>Legal Address</th>
+            <th>Service Type</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="i : ${institutions}">
+            <td th:text="${i.userId}"></td>
+            <td th:text="${i.user != null ? i.user.email : ''}"></td>
+            <td th:text="${i.officialName}"></td>
+            <td th:text="${i.fiscalCode}"></td>
+            <td th:text="${i.legalAddress}"></td>
+            <td th:text="${i.serviceType}"></td>
+            <td>
+                <a th:href="@{/institutions/edit/{id}(id=${i.userId})}" class="btn btn-edit">Edit</a>
+                <a th:href="@{/institutions/delete/{id}(id=${i.userId})}" class="btn btn-delete">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>

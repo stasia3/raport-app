@@ -2,6 +2,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.InstitutionServiceType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "institution")
@@ -25,7 +27,8 @@ public class Institution {
     private String legalAddress;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "service_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "service_type", nullable = false, columnDefinition = "institution_service_type_enum")
     private InstitutionServiceType serviceType;
 
     public Integer getUserId() {

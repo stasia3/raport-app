@@ -3,6 +3,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.DispatcherRole;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "dispatcher")
@@ -20,7 +22,8 @@ public class Dispatcher {
     private String fullName;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "role", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "role", nullable = false, columnDefinition = "dispatcher_role_enum")
     private DispatcherRole role;
 
     @Column(name = "access_level", nullable = false)

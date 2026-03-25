@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Dispatcher</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit Dispatcher</h1>
+
+    <form th:action="@{/dispatchers/update/{id}(id=${dispatcher.userId})}"
+          th:object="${dispatcher}"
+          method="post">
+
+        <p>
+            <strong>User ID:</strong>
+            <span th:text="${dispatcher.userId}"></span>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <span th:text="${dispatcher.user.email}"></span>
+        </p>
+
+        <label>Full Name</label>
+        <input type="text" th:field="*{fullName}" required>
+
+        <label>Role</label>
+        <select th:field="*{role}" required>
+            <option value="">Select role</option>
+            <option th:each="r : ${roles}"
+                    th:value="${r}"
+                    th:text="${r}">
+            </option>
+        </select>
+
+        <label>Access Level</label>
+        <input type="number" th:field="*{accessLevel}" min="0" required>
+
+        <button type="submit" class="btn btn-save">Update</button>
+        <a th:href="@{/dispatchers}" class="btn btn-back">Back</a>
+    </form>
+</div>
+
+</body>
+</html>

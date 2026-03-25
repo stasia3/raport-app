@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Institution</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit Institution</h1>
+
+    <form th:action="@{/institutions/update/{id}(id=${institution.userId})}"
+          th:object="${institution}"
+          method="post">
+
+        <p>
+            <strong>User ID:</strong>
+            <span th:text="${institution.userId}"></span>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <span th:text="${institution.user.email}"></span>
+        </p>
+
+        <label>Official Name</label>
+        <input type="text" th:field="*{officialName}" required>
+
+        <label>Fiscal Code</label>
+        <input type="text" th:field="*{fiscalCode}" required>
+
+        <label>Legal Address</label>
+        <input type="text" th:field="*{legalAddress}" required>
+
+        <label>Service Type</label>
+        <select th:field="*{serviceType}" required>
+            <option value="">Select service type</option>
+            <option th:each="type : ${serviceTypes}"
+                    th:value="${type}"
+                    th:text="${type}">
+            </option>
+        </select>
+
+        <button type="submit" class="btn btn-save">Update</button>
+        <a th:href="@{/institutions}" class="btn btn-back">Back</a>
+    </form>
+</div>
+
+</body>
+</html>
