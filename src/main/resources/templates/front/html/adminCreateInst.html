@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicReport — Creează Instituție</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="../adminCommon.css">
+</head>
+<body>
+<div class="dash-root">
+    <header class="cmd-bar">
+        <div class="cmd-left">
+            <div class="cmd-logo">
+                <div class="cmd-mark">CR</div>
+                <div class="cmd-brand-wrap">
+                    <div class="cmd-brand">CivicReport</div>
+                    <div class="cmd-subbrand">Administrare instituții</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="create-container">
+            <a href="adminInstitutions.html" class="back-link">← Înapoi la lista instituțiilor</a>
+
+            <section class="page-hero">
+                <h1>Creare instituție</h1>
+                <p>
+                    Introdu manual o instituție nouă în sistemul CivicReport. Formularul simulează
+                    inserția corelată în tabelele <strong>USERS</strong> și <strong>INSTITUTION</strong>,
+                    folosind administratorul curent din sesiune pentru audit.
+                </p>
+            </section>
+
+            <form id="createInstitutionForm" novalidate>
+                <section class="form-card">
+                    <h2>Cont utilizator</h2>
+                    <p class="section-note">Datele folosite pentru autentificarea contului instituției.</p>
+
+                    <div class="form-grid">
+                        <div class="field full" id="field-email">
+                            <label for="email" class="req">Email</label>
+                            <input type="email" id="email" name="email" placeholder="institutie@civicreport.ro" autocomplete="off" />
+                            <div class="error-text">Introdu un email valid.</div>
+                        </div>
+
+                        <div class="field full" id="field-password">
+                            <label for="password" class="req">Parolă</label>
+                            <div class="password-row">
+                                <input type="text" id="password" name="password" placeholder="Minim 12 caractere." autocomplete="off" />
+                            </div>
+                            <div class="field-hint">Parola trebuie să aibă mai mult de 12 caractere.</div>
+                            <div class="field-hint">Recomandam transmiterea parolei initiale a institutiei printr-un canal sigur.</div>
+                            <div class="error-text">Parola este obligatorie.</div>
+                        </div>
+
+                        <div class="field" id="field-role">
+                            <label for="role">Rol</label>
+                            <input type="text" id="role" name="role" value="Institution" readonly />
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card">
+                    <h2>Identitate juridică</h2>
+                    <p class="section-note">Datele oficiale care descriu instituția în sistem.</p>
+
+                    <div class="form-grid">
+                        <div class="field full" id="field-officialName">
+                            <label for="officialName" class="req">Denumire Oficială</label>
+                            <input type="text" id="officialName" name="officialName" placeholder="Ex: Serviciul Public de Iluminat Local" />
+                            <div class="error-text">Completează denumirea oficială.</div>
+                        </div>
+
+                        <div class="field" id="field-cui">
+                            <label for="cui" class="req">CUI</label>
+                            <input type="text" id="cui" name="cui" placeholder="Ex: RO12345678" />
+                            <div class="error-text">Completează CUI-ul instituției.</div>
+                        </div>
+
+                        <div class="field" id="field-contactPerson">
+                            <label for="contactPerson" class="req">Persoană Contact</label>
+                            <input type="text" id="contactPerson" name="contactPerson" placeholder="Nume reprezentant desemnat" />
+                            <div class="error-text">Completează persoana de contact.</div>
+                        </div>
+
+                        <div class="field full" id="field-legalAddress">
+                            <label for="legalAddress" class="req">Adresă Sediu</label>
+                            <textarea id="legalAddress" name="legalAddress" placeholder="Adresă legală completă a instituției"></textarea>
+                            <div class="error-text">Completează adresa sediului.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card">
+                    <h2>Configurare operativă</h2>
+                    <p class="section-note">Setări de activare și configurare a fluxului instituției.</p>
+
+                    <div class="form-grid">
+                        <div class="field" id="field-serviceType">
+                            <label for="serviceType" class="req">Tip Serviciu</label>
+                            <select id="serviceType" name="serviceType">
+                                <option value="">Selectează tipul de serviciu</option>
+                                <option value="Infrastructură">Infrastructură</option>
+                                <option value="Iluminat">Iluminat</option>
+                                <option value="Salubritate">Salubritate</option>
+                                <option value="Trafic">Trafic</option>
+                                <option value="Spații Verzi">Spații Verzi</option>
+                                <option value="Altele">Altele</option>
+                            </select>
+                            <div class="error-text">Selectează tipul de serviciu.</div>
+                        </div>
+
+                        <div class="field" id="field-assignedZone">
+                            <label for="assignedZone" class="req">Zonă Alocată</label>
+                            <select id="assignedZone" name="assignedZone">
+                                <option value="Mehedinți">Mehedinți</option>
+                                <option value="Alba">Alba</option>
+                                <option value="Arad">Arad</option>
+                                <option value="Argeș">Argeș</option>
+                                <option value="Bacău">Bacău</option>
+                                <option value="Bihor">Bihor</option>
+                                <option value="Bistrița-Năsăud">Bistrița-Năsăud</option>
+                                <option value="Botoșani">Botoșani</option>
+                                <option value="Brașov">Brașov</option>
+                                <option value="Brăila">Brăila</option>
+                                <option value="București - Sector 1">București - Sector 1</option>
+                                <option value="București - Sector 2">București - Sector 2</option>
+                                <option value="București - Sector 3">București - Sector 3</option>
+                                <option value="București - Sector 4">București - Sector 4</option>
+                                <option value="București - Sector 5">București - Sector 5</option>
+                                <option value="București - Sector 6">București - Sector 6</option>
+                                <option value="Buzău">Buzău</option>
+                                <option value="Caraș-Severin">Caraș-Severin</option>
+                                <option value="Călărași">Călărași</option>
+                                <option value="Cluj">Cluj</option>
+                                <option value="Constanța">Constanța</option>
+                                <option value="Covasna">Covasna</option>
+                                <option value="Dâmbovița">Dâmbovița</option>
+                                <option value="Dolj">Dolj</option>
+                                <option value="Galați">Galați</option>
+                                <option value="Giurgiu">Giurgiu</option>
+                                <option value="Gorj">Gorj</option>
+                                <option value="Harghita">Harghita</option>
+                                <option value="Hunedoara">Hunedoara</option>
+                                <option value="Ialomița">Ialomița</option>
+                                <option value="Iași">Iași</option>
+                                <option value="Ilfov">Ilfov</option>
+                                <option value="Maramureș">Maramureș</option>
+                                <option value="Mureș">Mureș</option>
+                                <option value="Neamț">Neamț</option>
+                                <option value="Olt">Olt</option>
+                                <option value="Prahova">Prahova</option>
+                                <option value="Satu Mare">Satu Mare</option>
+                                <option value="Sălaj">Sălaj</option>
+                                <option value="Sibiu">Sibiu</option>
+                                <option value="Suceava">Suceava</option>
+                                <option value="Teleorman">Teleorman</option>
+                                <option value="Timiș">Timiș</option>
+                                <option value="Tulcea">Tulcea</option>
+                                <option value="Vâlcea">Vâlcea</option>
+                                <option value="Vaslui">Vaslui</option>
+                                <option value="Vrancea">Vrancea</option>
+                            </select>
+                            <div class="error-text">Selectează zona alocată.</div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="form-card actions-card">
+                    <button type="button" class="btn btn-secondary" id="resetBtn">Resetează</button>
+                    <button type="submit" class="btn btn-primary">Creează Instituție</button>
+                </section>
+            </form>
+        </div>
+    </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script>
+    const ADMIN_SESSION_KEY = 'cr_session';
+    const STORE_KEY = 'cr_mock_institutions_store';
+
+    const form = document.getElementById('createInstitutionForm');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const fieldsMap = {
+      email: document.getElementById('field-email'),
+      password: document.getElementById('field-password'),
+      officialName: document.getElementById('field-officialName'),
+      cui: document.getElementById('field-cui'),
+      legalAddress: document.getElementById('field-legalAddress'),
+      contactPerson: document.getElementById('field-contactPerson'),
+      serviceType: document.getElementById('field-serviceType'),
+      assignedZone: document.getElementById('field-assignedZone')
+    };
+
+    const currentAdmin = getCurrentAdmin();
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      document.getElementById('role').value = 'Institution';
+      document.getElementById('assignedZone').value = 'Mehedinți';
+      clearAllInvalid();
+    });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      clearAllInvalid();
+
+      const payload = collectFormData();
+      const validation = validatePayload(payload);
+
+      if (!validation.ok) {
+        validation.errors.forEach(markInvalid);
+        showToast('Formular incomplet', 'Toate câmpurile marcate sunt obligatorii și trebuie completate corect.', 'error');
+        return;
+      }
+
+      const store = getStore();
+
+      const emailExists = store.users.some(user => user.email.toLowerCase() === payload.email.toLowerCase());
+      if (emailExists) {
+        markInvalid('email', 'Email-ul este deja utilizat.');
+        showToast('Email duplicat', 'Email-ul introdus există deja în sistem.', 'error');
+        return;
+      }
+
+      const cuiExists = store.institutions.some(inst => inst.fiscal_code.toLowerCase() === payload.cui.toLowerCase());
+      if (cuiExists) {
+        markInvalid('cui', 'CUI-ul este deja utilizat.');
+        showToast('CUI duplicat', 'CUI-ul introdus există deja în sistem.', 'error');
+        return;
+      }
+
+      const newUserId = getNextId(store.users);
+
+      const usersInsert = {
+        id: newUserId,
+        email: payload.email,
+        password_hash: payload.password,
+        user_role: 'Institution',
+        last_login: null,
+      };
+
+      const institutionInsert = {
+        user_id: newUserId,
+        official_name: payload.officialName,
+        fiscal_code: payload.cui,
+        legal_address: payload.legalAddress,
+        service_type: payload.serviceType,
+        assigned_zone: payload.assignedZone,
+        contact_person: payload.contactPerson,
+        approved_by_global_admin_id: currentAdmin.id
+      };
+
+      store.users.push(usersInsert);
+      store.institutions.push(institutionInsert);
+      saveStore(store);
+
+      console.log('Simulare INSERT USERS:', usersInsert);
+      console.log('Simulare INSERT INSTITUTION:', institutionInsert);
+
+      showToast(
+        'Instituție creată',
+        `Contul pentru „${payload.officialName}” a fost pregătit cu succes. user_id generat: ${newUserId}.`,
+        'success'
+      );
+
+      form.reset();
+      document.getElementById('role').value = 'Institution';
+      document.getElementById('assignedZone').value = 'Mehedinți';
+    });
+
+    function collectFormData() {
+      return {
+        email: document.getElementById('email').value.trim(),
+        password: document.getElementById('password').value.trim(),
+        role: document.getElementById('role').value.trim(),
+        officialName: document.getElementById('officialName').value.trim(),
+        cui: document.getElementById('cui').value.trim(),
+        legalAddress: document.getElementById('legalAddress').value.trim(),
+        contactPerson: document.getElementById('contactPerson').value.trim(),
+        serviceType: document.getElementById('serviceType').value.trim(),
+        assignedZone: document.getElementById('assignedZone').value.trim()
+      };
+    }
+
+    function validatePayload(data) {
+      const errors = [];
+
+      if (!data.email) {
+        errors.push({ field: 'email', message: 'Emailul este obligatoriu.' });
+      } else if (!isRealEmail(data.email)) {
+        errors.push({ field: 'email', message: 'Introdu un email real, de forma nume@domeniu.tld.' });
+      }
+
+      if (!data.password) {
+        errors.push({ field: 'password', message: 'Parola este obligatorie.' });
+      } else if (data.password.length <= 12) {
+        errors.push({ field: 'password', message: 'Parola trebuie să aibă mai mult de 12 caractere.' });
+      }
+
+      if (!data.officialName) errors.push({ field: 'officialName', message: 'Completează denumirea oficială.' });
+      if (!data.cui) errors.push({ field: 'cui', message: 'Completează CUI-ul instituției.' });
+      if (!data.legalAddress) errors.push({ field: 'legalAddress', message: 'Completează adresa sediului.' });
+      if (!data.contactPerson) errors.push({ field: 'contactPerson', message: 'Completează persoana de contact.' });
+      if (!data.serviceType) errors.push({ field: 'serviceType', message: 'Selectează tipul de serviciu.' });
+      if (!data.assignedZone) errors.push({ field: 'assignedZone', message: 'Selectează zona alocată.' });
+
+      return {
+        ok: errors.length === 0,
+        errors
+      };
+    }
+
+
+    function markInvalid(error) {
+      const wrapper = fieldsMap[error.field];
+      if (!wrapper) return;
+
+      wrapper.classList.add('invalid');
+
+      const msg = wrapper.querySelector('.error-text');
+      if (msg && error.message) {
+        msg.textContent = error.message;
+      }
+    }
+
+    function clearInvalid(fieldKey) {
+      const wrapper = fieldsMap[fieldKey];
+      if (!wrapper) return;
+      wrapper.classList.remove('invalid');
+    }
+
+    function clearAllInvalid() {
+      Object.values(fieldsMap).forEach(node => node.classList.remove('invalid'));
+    }
+
+    function isRealEmail(email) {
+      const value = String(email).trim();
+
+      if (!/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(value)) {
+        return false;
+      }
+
+      const domain = value.split('@')[1].toLowerCase();
+
+      if (
+        domain.startsWith('.') ||
+        domain.endsWith('.') ||
+        domain.includes('..') ||
+        !domain.includes('.')
+      ) {
+        return false;
+      }
+
+      return true;
+    }
+
+
+    function getCurrentAdmin() {
+      try {
+        const session = JSON.parse(sessionStorage.getItem(ADMIN_SESSION_KEY) || 'null');
+
+        if (session && (
+          session.user_role === 'GlobalAdmin' ||
+          session.userRole === 'GlobalAdmin'
+        )) {
+          return {
+            id: session.id || session.user_id || 4,
+            displayName: session.display_name || session.admin_handle || 'Administrator nivel 4'
+          };
+        }
+      } catch (_) {}
+
+      return {
+        id: 4,
+        displayName: 'Administrator nivel 4'
+      };
+    }
+
+    function getStore() {
+      const raw = localStorage.getItem(STORE_KEY);
+      if (raw) {
+        try {
+          return JSON.parse(raw);
+        } catch (_) {}
+      }
+
+      const initialStore = {
+        users: [
+          {
+            id: 101,
+            email: 'iluminat@primarie.ro',
+            password_hash: 'demo123',
+            user_role: 'Institution',
+            last_login: null,
+            is_active: true
+          }
+        ],
+        institutions: [
+          {
+            user_id: 101,
+            official_name: 'Serviciul Public de Iluminat Severin',
+            fiscal_code: 'RO99887766',
+            legal_address: 'Str. Traian 12, Drobeta-Turnu Severin',
+            service_type: 'Iluminat',
+            assigned_zone: 'Mehedinți',
+            contact_person: 'Mihai Pop',
+            approved_by_global_admin_id: 4
+          }
+        ]
+      };
+
+      localStorage.setItem(STORE_KEY, JSON.stringify(initialStore));
+      return initialStore;
+    }
+
+    function saveStore(store) {
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    }
+
+    function getNextId(list) {
+      if (!list.length) return 1;
+      return Math.max(...list.map(item => Number(item.id) || 0)) + 1;
+    }
+
+    function showToast(title, message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-title">${title}</div>
+        <div class="toast-message">${message}</div>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(6px)';
+        toast.style.transition = 'all .2s ease';
+        setTimeout(() => toast.remove(), 220);
+      }, 3200);
+    }
+</script>
+</body>
+</html>

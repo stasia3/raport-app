@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicReport — Instituții Partenere</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="../adminCommon.css">
+
+</head>
+<body>
+<div class="dash-root">
+    <header class="cmd-bar">
+        <div class="cmd-left">
+            <div class="cmd-logo">
+                <div class="cmd-mark">CR</div>
+                <div class="cmd-brand-wrap">
+                    <div class="cmd-brand">CivicReport</div>
+                    <div class="cmd-subbrand">Administrare instituții</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="page-shell">
+        <div class="page-container">
+            <section class="page-head">
+                <div class="page-head-copy">
+                    <h1>Instituții Partenere</h1>
+                    <p>
+                        Vizualizezarea, filtrarea și gestionarea instituțiilor înregistrate în sistem.
+                    </p>
+                </div>
+
+                <a href="adminCreateInst.html" class="btn btn-primary">+ Adaugă Instituție</a>
+            </section>
+
+            <section class="kpi-grid">
+                <article class="kpi-card">
+                    <div class="kpi-label">Total Instituții</div>
+                    <div class="kpi-value" id="kpiTotal">0</div>
+                    <div class="kpi-note">Toate înregistrările existente în store.</div>
+                </article>
+
+                <article class="kpi-card">
+                    <div class="kpi-label">Acoperire Zone</div>
+                    <div class="kpi-value" id="kpiZones">0</div>
+                    <div class="kpi-note">Număr de județe/sectoare unice disponibile în date.</div>
+                </article>
+            </section>
+
+            <section class="panel-card">
+                <div class="filters-grid">
+                    <div class="field">
+                        <label for="searchInput">Căutare</label>
+                        <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="Caută după denumire, CUI sau email"
+                                autocomplete="off"
+                        />
+                    </div>
+
+                    <div class="field">
+                        <label for="serviceFilter">Tip serviciu</label>
+                        <select id="serviceFilter">
+                            <option value="">Toate tipurile</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label for="zoneFilter">Zonă</label>
+                        <select id="zoneFilter">
+                            <option value="">Toate zonele</option>
+                        </select>
+                    </div>
+                </div>
+            </section>
+
+            <section class="table-card">
+                <div class="table-head">
+                    <div>
+                        <h2>Registru instituții</h2>
+                        <p>Lista este actualizată instant la căutare și filtrare.</p>
+                    </div>
+
+                    <div class="result-chip">
+                        Rezultate afișate: <span id="resultsCount">0</span>
+                    </div>
+                </div>
+
+                <div class="table-wrap" id="tableWrap">
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Denumire &amp; CUI</th>
+                            <th>Tip Serviciu</th>
+                            <th>Zonă</th>
+                            <th>Contact</th>
+                            <th>Acțiuni</th>
+                        </tr>
+                        </thead>
+                        <tbody id="institutionsTbody"></tbody>
+                    </table>
+                </div>
+
+                <div class="empty-state" id="emptyState">
+                    <div class="empty-illustration">🏛</div>
+                    <h3>Nu există instituții înregistrate în această zonă.</h3>
+                    <p>Modifică filtrele sau adaugă o instituție nouă pentru a popula registrul.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="modal-overlay" id="deleteModal">
+    <div class="modal-card">
+        <div class="modal-head">
+            <h3>Confirmă ștergerea</h3>
+        </div>
+        <div class="modal-body" id="deleteModalMessage">
+            Ești sigur că vrei să ștergi această instituție?
+        </div>
+        <div class="modal-actions">
+            <button type="button" class="btn btn-secondary" id="cancelDeleteBtn">Renunță</button>
+            <button type="button" class="btn btn-primary" id="confirmDeleteBtn">Șterge</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const STORE_KEY = 'cr_mock_institutions_store';
+
+    const searchInput = document.getElementById('searchInput');
+    const serviceFilter = document.getElementById('serviceFilter');
+    const zoneFilter = document.getElementById('zoneFilter');
+    const tbody = document.getElementById('institutionsTbody');
+    const emptyState = document.getElementById('emptyState');
+    const tableWrap = document.getElementById('tableWrap');
+    const resultsCount = document.getElementById('resultsCount');
+
+    const kpiTotal = document.getElementById('kpiTotal');
+    const kpiZones = document.getElementById('kpiZones');
+
+    const deleteModal = document.getElementById('deleteModal');
+    const deleteModalMessage = document.getElementById('deleteModalMessage');
+    const cancelDeleteBtn = document.getElementById('cancelDeleteBtn');
+    const confirmDeleteBtn = document.getElementById('confirmDeleteBtn');
+
+    let pendingDeleteUserId = null;
+
+    init();
+
+    function init() {
+      ensureStore();
+      populateFilters();
+      bindEvents();
+      render();
+    }
+
+    function bindEvents() {
+      searchInput.addEventListener('input', render);
+      serviceFilter.addEventListener('change', render);
+      zoneFilter.addEventListener('change', render);
+
+      cancelDeleteBtn.addEventListener('click', closeDeleteModal);
+      confirmDeleteBtn.addEventListener('click', confirmDelete);
+
+      deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) closeDeleteModal();
+      });
+    }
+
+    function ensureStore() {
+      const raw = localStorage.getItem(STORE_KEY);
+
+      if (raw) {
+        try {
+          JSON.parse(raw);
+          return;
+        } catch (_) {}
+      }
+
+      const seed = {
+        users: [
+          {
+            id: 101,
+            email: 'iluminat@primarie.ro',
+            password_hash: 'parolaFoarteLunga123',
+            user_role: 'Institution',
+            last_login: '2026-03-20T09:20:00'
+          },
+          {
+            id: 102,
+            email: 'salubritate@municipiu.ro',
+            password_hash: 'parolaFoarteLunga123',
+            user_role: 'Institution',
+            last_login: null
+          },
+          {
+            id: 103,
+            email: 'spatiiverzi@local.ro',
+            password_hash: 'parolaFoarteLunga123',
+            user_role: 'Institution',
+            last_login: '2026-03-25T14:10:00'
+          }
+        ],
+        institutions: [
+          {
+            user_id: 101,
+            official_name: 'Serviciul Public de Iluminat Severin',
+            fiscal_code: 'RO99887766',
+            legal_address: 'Str. Traian 12, Drobeta-Turnu Severin',
+            service_type: 'Iluminat',
+            assigned_zone: 'Mehedinți',
+            contact_person: 'Mihai Pop',
+            is_disabled: false
+          },
+          {
+            user_id: 102,
+            official_name: 'Direcția Salubritate Urbană',
+            fiscal_code: 'RO55667788',
+            legal_address: 'Bd. Carol 21, Drobeta-Turnu Severin',
+            service_type: 'Salubritate',
+            assigned_zone: 'Mehedinți',
+            contact_person: 'Ana Ionescu',
+            is_disabled: true
+          },
+          {
+            user_id: 103,
+            official_name: 'Administrația Spații Verzi',
+            fiscal_code: 'RO11223344',
+            legal_address: 'Str. Independenței 4, Orșova',
+            service_type: 'Spații Verzi',
+            assigned_zone: 'Mehedinți',
+            contact_person: 'Victor Radu',
+            is_disabled: false
+          }
+        ]
+      };
+
+      localStorage.setItem(STORE_KEY, JSON.stringify(seed));
+    }
+
+    function getStore() {
+      try {
+        return JSON.parse(localStorage.getItem(STORE_KEY)) || { users: [], institutions: [] };
+      } catch (_) {
+        return { users: [], institutions: [] };
+      }
+    }
+
+    function saveStore(store) {
+      localStorage.setItem(STORE_KEY, JSON.stringify(store));
+    }
+
+    function getJoinedRows() {
+      const store = getStore();
+      const users = Array.isArray(store.users) ? store.users : [];
+      const institutions = Array.isArray(store.institutions) ? store.institutions : [];
+
+      return institutions.map(inst => {
+        const user = users.find(u => Number(u.id) === Number(inst.user_id)) || null;
+
+        return {
+          user_id: inst.user_id,
+          official_name: inst.official_name || 'Instituție fără nume',
+          fiscal_code: inst.fiscal_code || '—',
+          legal_address: inst.legal_address || '—',
+          service_type: inst.service_type || 'Altele',
+          zone: inst.assigned_zone || 'Nespecificată',
+          contact_person: inst.contact_person || '—',
+          email: user?.email || '—',
+          last_login: user?.last_login || null,
+          user_role: user?.user_role || 'Institution',
+          is_disabled: Boolean(inst.is_disabled)
+        };
+      });
+    }
+
+    function populateFilters() {
+      const rows = getJoinedRows();
+
+      const services = uniqueSorted(rows.map(r => r.service_type).filter(Boolean));
+      const zones = uniqueSorted(rows.map(r => r.zone).filter(Boolean));
+
+      serviceFilter.innerHTML = '<option value="">Toate tipurile</option>' +
+        services.map(s => `<option value="${escapeHtml(s)}">${escapeHtml(s)}</option>`).join('');
+
+      zoneFilter.innerHTML = '<option value="">Toate zonele</option>' +
+        zones.map(z => `<option value="${escapeHtml(z)}">${escapeHtml(z)}</option>`).join('');
+    }
+
+    function render() {
+      const rows = getJoinedRows();
+      const query = searchInput.value.trim().toLowerCase();
+      const service = serviceFilter.value.trim();
+      const zone = zoneFilter.value.trim();
+
+      const filtered = rows.filter(row => {
+        const matchesSearch =
+          !query ||
+          row.official_name.toLowerCase().includes(query) ||
+          row.fiscal_code.toLowerCase().includes(query) ||
+          row.email.toLowerCase().includes(query);
+
+        const matchesService = !service || row.service_type === service;
+        const matchesZone = !zone || row.zone === zone;
+
+        return matchesSearch && matchesService && matchesZone;
+      });
+
+      renderKpis(rows);
+      renderTable(filtered);
+    }
+
+    function renderKpis(allRows) {
+  const total = allRows.length;
+  const zones = uniqueSorted(
+    allRows
+      .map(row => row.zone)
+      .filter(zone => zone && zone !== 'Nespecificată')
+  ).length;
+
+  kpiTotal.textContent = String(total);
+  kpiZones.textContent = String(zones);
+}
+
+    function renderTable(rows) {
+      resultsCount.textContent = String(rows.length);
+
+      if (!rows.length) {
+        tbody.innerHTML = '';
+        tableWrap.style.display = 'none';
+        emptyState.style.display = 'block';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      tableWrap.style.display = 'block';
+
+      tbody.innerHTML = rows.map(row => {
+        const badgeClass = getServiceBadgeClass(row.service_type);
+        const activeLabel = row.is_disabled ? 'Dezactivată' : 'Activă';
+
+        return `
+          <tr>
+            <td>
+              <div class="inst-name">${escapeHtml(row.official_name)}</div>
+              <div class="inst-meta">CUI: ${escapeHtml(row.fiscal_code)}</div>
+              <div class="inst-meta">Email: ${escapeHtml(row.email)}</div>
+            </td>
+
+            <td>
+              <span class="service-badge ${badgeClass}">
+                ${escapeHtml(row.service_type)}
+              </span>
+              <span class="subtle">${escapeHtml(activeLabel)}</span>
+            </td>
+
+            <td>
+              <span class="zone-text">${escapeHtml(row.zone)}</span>
+              <span class="subtle">${escapeHtml(row.legal_address)}</span>
+            </td>
+
+            <td>
+              <span class="contact-text">${escapeHtml(row.contact_person)}</span>
+              <span class="subtle">${row.last_login ? 'Ultima autentificare: ' + formatDateTime(row.last_login) : 'Fără autentificare înregistrată'}</span>
+            </td>
+
+            <td>
+              <div class="action-row">
+                <button type="button" class="action-btn" onclick="editInstitution(${Number(row.user_id)})">Editare</button>
+                <button type="button" class="action-btn danger" onclick="askDeleteInstitution(${Number(row.user_id)})">Ștergere</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function getServiceBadgeClass(service) {
+      const value = String(service || '').toLowerCase();
+
+      if (value.includes('infrastruct')) return 'badge-infra';
+      if (value.includes('iluminat')) return 'badge-iluminat';
+      if (value.includes('salubritate')) return 'badge-salubritate';
+      if (value.includes('trafic')) return 'badge-trafic';
+      if (value.includes('spații verzi') || value.includes('spatii verzi')) return 'badge-spatii';
+      return 'badge-altele';
+    }
+
+    function uniqueSorted(list) {
+      return [...new Set(list)].sort((a, b) => a.localeCompare(b, 'ro'));
+    }
+
+    function formatDateTime(value) {
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return '—';
+
+      return new Intl.DateTimeFormat('ro-RO', {
+        dateStyle: 'medium',
+        timeStyle: 'short'
+      }).format(date);
+    }
+
+    function showToast(title, message, type = 'success') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.innerHTML = `
+        <div class="toast-title">${escapeHtml(title)}</div>
+        <div class="toast-message">${escapeHtml(message)}</div>
+      `;
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(6px)';
+        toast.style.transition = 'all .2s ease';
+        setTimeout(() => toast.remove(), 220);
+      }, 3200);
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    }
+
+    window.editInstitution = function(userId) {
+  window.location.href = `adminEditInst.html?user_id=${userId}`;
+};
+
+    window.toggleInstitution = function(userId) {
+      const store = getStore();
+      const institution = store.institutions.find(item => Number(item.user_id) === Number(userId));
+
+      if (!institution) {
+        showToast('Instituție inexistentă', 'Înregistrarea nu a fost găsită.', 'error');
+        return;
+      }
+
+      institution.is_disabled = !Boolean(institution.is_disabled);
+      saveStore(store);
+      populateFilters();
+      render();
+
+      showToast(
+        institution.is_disabled ? 'Instituție dezactivată' : 'Instituție activată',
+        institution.is_disabled
+          ? 'Contul instituției a fost marcat ca inactiv în datele mock.'
+          : 'Contul instituției a fost reactivat în datele mock.',
+        institution.is_disabled ? 'warning' : 'success'
+      );
+    };
+
+    window.askDeleteInstitution = function(userId) {
+      const rows = getJoinedRows();
+      const row = rows.find(item => Number(item.user_id) === Number(userId));
+
+      if (!row) {
+        showToast('Instituție inexistentă', 'Înregistrarea nu a fost găsită.', 'error');
+        return;
+      }
+
+      pendingDeleteUserId = Number(userId);
+      deleteModalMessage.innerHTML = `
+        Ești sigur că vrei să ștergi instituția <strong>${escapeHtml(row.official_name)}</strong>?
+        <br><br>
+        Operația va elimina intrările din <strong>users</strong> și <strong>institution</strong>.
+      `;
+      deleteModal.classList.add('open');
+    };
+
+    function closeDeleteModal() {
+      pendingDeleteUserId = null;
+      deleteModal.classList.remove('open');
+    }
+
+    function confirmDelete() {
+      if (pendingDeleteUserId == null) {
+        closeDeleteModal();
+        return;
+      }
+
+      const store = getStore();
+      const beforeUsers = store.users.length;
+      const beforeInst = store.institutions.length;
+
+      store.users = store.users.filter(user => Number(user.id) !== Number(pendingDeleteUserId));
+      store.institutions = store.institutions.filter(inst => Number(inst.user_id) !== Number(pendingDeleteUserId));
+
+      const removed = (beforeUsers !== store.users.length) || (beforeInst !== store.institutions.length);
+
+      saveStore(store);
+      closeDeleteModal();
+      populateFilters();
+      render();
+
+      if (removed) {
+        showToast('Instituție ștearsă', 'Înregistrările au fost eliminate din ambele tabele mock.', 'success');
+      } else {
+        showToast('Nicio modificare', 'Nu s-a găsit instituția pentru ștergere.', 'error');
+      }
+    }
+</script>
+</body>
+</html>
