@@ -147,14 +147,16 @@ CREATE TABLE institution (
 
 CREATE TABLE post (
     id                   INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    creator_user_id      INTEGER NOT NULL,
+    creator_user_id      INTEGER,
     title                VARCHAR(255) NOT NULL,
     description          TEXT NOT NULL,
     problem_tag          VARCHAR(100) NOT NULL,
     city                 VARCHAR(100) NOT NULL,
     street               VARCHAR(255) NOT NULL,
-    gps_latitude         DOUBLE PRECISION NOT NULL,
-    gps_longitude        DOUBLE PRECISION NOT NULL,
+    district             VARCHAR(100),
+    landmark             VARCHAR(255),
+    gps_latitude         DOUBLE PRECISION,
+    gps_longitude        DOUBLE PRECISION,
     created_at           TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     is_anonymous         BOOLEAN NOT NULL DEFAULT FALSE,
 

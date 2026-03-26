@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CivicReport — Feed</title>
-  <link rel="stylesheet" th:href="@{css/generalStyles.css}" />
+  <link rel="stylesheet" th:href="@{/css/styles.css}" />
 </head>
 <body>
 
@@ -108,8 +108,7 @@
         <p>Probleme urbane raportate de comunitate</p>
       </div>
       <div class="topbar-right">
-<!--        <a th:href="@{/posts/create/}" class="btn-post"> &lt;!&ndash; TODO: ckeck &ndash;&gt;-->
-        <a href="#" class="btn-post"> <!-- TODO: ckeck -->
+        <a th:href="@{/posts/new}" class="btn-post"> <!-- TODO: ckeck -->
           <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
             <path d="M6 1v10M1 6h10"/>
           </svg>
@@ -133,12 +132,68 @@
         <button class="filter-chip">În acțiune</button>
         <button class="filter-chip">Rezolvat</button>
       </div>
+      <article class="post-card" th:each="post, postStat : ${posts}">
+        <div class="carousel">
+          <div class="carousel-track"
+               th:id="'track-' + ${post.id}"
+               th:if="${post.photos != null and !post.photos.isEmpty()}">
 
-      <article class="post-card" th:each="post : ${posts}">
-        <div class="post-body" style="padding-top:1.35rem;">
+            <div class="carousel-slide" th:each="photo : ${post.photos}">
+              <img th:src="${photo.photoUrl}"
+                   alt="Fotografie postare"
+                   style="width:100%; height:100%; object-fit:cover;" />
+            </div>
+          </div>
+
+          <div class="carousel-track"
+               th:id="'track-' + ${post.id}"
+               th:if="${post.photos == null or post.photos.isEmpty()}">
+            <div class="carousel-slide">
+              <span class="carousel-placeholder">Fotografie indisponibilă</span>
+            </div>
+          </div>
+
+          <button class="carousel-btn prev"
+                  th:if="${post.photos != null and post.photos.size() > 1}"
+                  th:attr="onclick=|slide('track-${post.id}', -1)|"
+                  aria-label="Anterior">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M6.5 1.5L3 5l3.5 3.5"/>
+            </svg>
+          </button>
+
+          <button class="carousel-btn next"
+                  th:if="${post.photos != null and post.photos.size() > 1}"
+                  th:attr="onclick=|slide('track-${post.id}', 1)|"
+                  aria-label="Următor">
+            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
+              <path d="M3.5 1.5L7 5l-3.5 3.5"/>
+            </svg>
+          </button>
+
+          <div class="carousel-dots" th:if="${post.photos != null and post.photos.size() > 1}">
+            <span class="carousel-dot"
+                  th:each="photo, photoStat : ${post.photos}"
+                  th:classappend="${photoStat.index == 0} ? ' active' : ''"></span>
+          </div>
+
+          <span class="carousel-count"
+                th:if="${post.photos != null and !post.photos.isEmpty()}"
+                th:id="'count-' + ${post.id}"
+                th:text="'1 / ' + ${post.photos.size()}">
+            1 / 1
+        </span>
+        </div>
+
+        <div class="post-body">
           <div class="post-meta-top">
-            <span class="post-tag" th:text="${post.problemTag}">Tag</span>
-            <span class="post-location" th:text="${post.street + ', ' + post.city}">Locație</span>
+            <span class="post-tag" th:text="${post.problemTag}">Infrastructură</span>
+            <span class="post-location">
+                <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+                    <path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/>
+                </svg>
+                <span th:text="${post.street + ', ' + post.city}">Str. Mihai Eminescu 14</span>
+            </span>
           </div>
 
           <h3 class="post-title" th:text="${post.title}">Titlu</h3>
@@ -148,12 +203,17 @@
             <div class="post-author">
               <div class="author-avatar"
                    th:text="${post.creator != null ? #strings.substring(post.creator.firstName,0,1) + #strings.substring(post.creator.lastName,0,1) : '??'}">
-                IP
+                MC
               </div>
               <span class="author-name"
                     th:text="${post.creator != null ? post.creator.firstName + ' ' + post.creator.lastName : 'Anonim'}">
-          Ion Popescu
-        </span>
+                    Maria Constantin
+                </span>
+            </div>
+
+            <div class="post-actions">
+              <button class="action-btn">Susține · 12</button>
+              <button class="action-btn">Comentarii · 4</button>
             </div>
           </div>
         </div>
