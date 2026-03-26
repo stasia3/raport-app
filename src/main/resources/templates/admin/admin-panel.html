@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Admin Panel</title>
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
     <style>
         body {
             margin: 0;
@@ -119,7 +120,42 @@
             <p>Manage institution accounts and service categories.</p>
             <a th:href="@{/institutions}" class="btn">Open Institutions</a>
         </div>
+        <div class="card">
+            <h2>Global Admins</h2>
+            <p>Manage global admin settings and security permissions.</p>
+            <a th:href="@{/global-admins}" class="btn">Open Global Admins</a>
+        </div>
+        <div class="card">
+            <h2>Photo</h2>
+            <p>Manage photoes.</p>
+            <a th:href="@{/admin/photos}" class="btn">Open Photoes</a>
+        </div>
+        <div class="card">
+            <h2>Posts</h2>
+            <p>Manage posts</p>
+            <a th:href="@{/admin/posts}" class="btn">Open Posts</a>
+        </div>
+        <div class="card">
+            <h2>Status History</h2>
+            <p>Manage status history</p>
+            <a th:href="@{/admin/status-history}" class="btn">Open Status History</a>
+        </div>
+        <div class="card">
+            <h2>Ticket</h2>
+            <p>Manage ticket</p>
+            <a th:href="@{/admin/tickets}" class="btn">Open Tickets</a>
+        </div>
 
+        <div class="card">
+            <h2>System-logs</h2>
+            <p>Manage system Logs</p>
+            <a th:href="@{/admin/system-logs}" class="btn">Open System logs</a>
+        </div>
+        <div class="card">
+            <h2>Votes</h2>
+            <p>Manage Votes</p>
+            <a th:href="@{/admin/votes}" class="btn">Open Votes</a>
+        </div>
 
     </div>
 

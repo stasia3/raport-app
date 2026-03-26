@@ -2,6 +2,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.TicketStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -18,7 +20,8 @@ public class StatusHistory {
     private Ticket ticket;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "changed_status", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "changed_status", nullable = false, columnDefinition = "ticket_status_enum")
     private TicketStatus changedStatus;
 
     @Column(name = "changed_at", nullable = false)
@@ -26,6 +29,9 @@ public class StatusHistory {
 
     public Integer getId() {
         return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Ticket getTicket() {

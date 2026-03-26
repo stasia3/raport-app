@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Status History</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1>Details</h1>
+
+<p><strong>ID:</strong> <span th:text="${statusHistory.id}"></span></p>
+<p><strong>Ticket:</strong> <span th:text="${statusHistory.ticket != null ? statusHistory.ticket.id : ''}"></span></p>
+<p><strong>Status:</strong> <span th:text="${statusHistory.changedStatus}"></span></p>
+<p><strong>Changed At:</strong> <span th:text="${statusHistory.changedAt}"></span></p>
+
+<a th:href="@{/admin/status-history}">Back</a>
+
+</body>
+</html>

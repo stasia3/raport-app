@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vote Form</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1 th:text="${vote.id == null} ? 'Add Vote' : 'Edit Vote'"></h1>
+
+<div th:if="${error}" th:text="${error}" style="color:red;"></div>
+
+<form th:action="@{/admin/votes/save}" th:object="${vote}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label>User:</label>
+        <select name="userId" required>
+            <option value="">-- select --</option>
+            <option th:each="u : ${users}"
+                    th:value="${u.id}"
+                    th:text="${'User #' + u.id}"
+                    th:selected="${vote.user != null and vote.user.id == u.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Post:</label>
+        <select name="postId" required>
+            <option value="">-- select --</option>
+            <option th:each="p : ${posts}"
+                    th:value="${p.id}"
+                    th:text="${'Post #' + p.id + ' - ' + p.title}"
+                    th:selected="${vote.post != null and vote.post.id == p.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Value:</label>
+        <input type="number" th:field="*{value}" required />
+    </div>
+
+    <button type="submit">Save</button>
+    <a th:href="@{/admin/votes}">Back</a>
+
+</form>
+
+</body>
+</html>

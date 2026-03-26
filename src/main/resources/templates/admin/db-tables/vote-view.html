@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Vote</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1>Vote Details</h1>
+
+<p><strong>ID:</strong> <span th:text="${vote.id}"></span></p>
+<p><strong>User:</strong> <span th:text="${vote.user != null ? 'User #' + vote.user.id : ''}"></span></p>
+<p><strong>Post:</strong> <span th:text="${vote.post != null ? 'Post #' + vote.post.id : ''}"></span></p>
+<p><strong>Value:</strong> <span th:text="${vote.value}"></span></p>
+
+<a th:href="@{/admin/votes}">Back</a>
+
+</body>
+</html>

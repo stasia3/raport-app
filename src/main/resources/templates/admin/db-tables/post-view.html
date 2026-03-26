@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Post</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Detalii postare</h1>
+
+<p><strong>ID:</strong> <span th:text="${post.id}"></span></p>
+<p><strong>Creator:</strong> <span th:text="${post.creator != null ? post.creator.userId : ''}"></span></p>
+<p><strong>Title:</strong> <span th:text="${post.title}"></span></p>
+<p><strong>Description:</strong> <span th:text="${post.description}"></span></p>
+<p><strong>Problem Tag:</strong> <span th:text="${post.problemTag}"></span></p>
+<p><strong>City:</strong> <span th:text="${post.city}"></span></p>
+<p><strong>Street:</strong> <span th:text="${post.street}"></span></p>
+<p><strong>GPS Latitude:</strong> <span th:text="${post.gpsLatitude}"></span></p>
+<p><strong>GPS Longitude:</strong> <span th:text="${post.gpsLongitude}"></span></p>
+<p><strong>Created At:</strong> <span th:text="${post.createdAt}"></span></p>
+<p><strong>Anonymous:</strong> <span th:text="${post.isAnonymous}"></span></p>
+
+<div>
+    <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}">Edit</a>
+    <a th:href="@{/admin/posts}">Înapoi la listă</a>
+</div>
+</body>
+</html>

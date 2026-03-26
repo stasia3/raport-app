@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<head>
-    <title>User Form</title>
-    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
-    <style>
-        body {
+
+body {
             font-family: Arial, sans-serif;
             background-color: #1f1f1f;
             color: white;
@@ -56,33 +51,41 @@
             display: inline-block;
             margin-left: 8px;
         }
-    </style>
-</head>
-<body>
 
-<h1 th:text="${isEdit} ? 'Edit User' : 'Add User'"></h1>
 
-<form th:action="@{/users/save}" th:object="${user}" method="post">
-    <input type="hidden" th:field="*{id}"/>
 
-    <label>Email</label>
-    <input type="email" th:field="*{email}" required>
+                a, button {
+                    text-decoration: none;
+                    cursor: pointer;
+                }
 
-    <label>Password Hash</label>
-    <input type="text" th:field="*{passwordHash}" required>
 
-    <label>Role</label>
-    <select th:field="*{userRole}" required>
-        <option value="">Select role</option>
-        <option th:each="role : ${roles}"
-                th:value="${role}"
-                th:text="${role}">
-        </option>
-    </select>
 
-    <button type="submit" class="btn btn-save">Save</button>
-    <a th:href="@{/users}" class="btn btn-back">Back</a>
-</form>
+                .btn-add {
+                    background-color: #4CAF50;
+                    margin-bottom: 20px;
+                }
 
-</body>
-</html>
+                .btn-edit {
+                    background-color: #3498db;
+                }
+
+                .btn-delete {
+                    background-color: #D9534F;
+                }
+
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    background-color: #2a2a2a;
+                }
+
+                th, td {
+                    padding: 12px;
+                    border: 1px solid #444;
+                    text-align: left;
+                }
+
+                th {
+                    background-color: #333;
+                }

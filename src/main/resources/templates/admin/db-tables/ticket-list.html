@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket List</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Lista ticketelor</h1>
+
+<a th:href="@{/admin/tickets/new}">Adaugă ticket nou</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Ticket Number</th>
+        <th>Post</th>
+        <th>Problem Tag</th>
+        <th>Assigned Institution User</th>
+        <th>Dispatcher User</th>
+        <th>Status</th>
+        <th>Ranking Score</th>
+        <th>Last Update</th>
+        <th>Red Flag</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="ticket : ${tickets}">
+        <td th:text="${ticket.id}"></td>
+        <td th:text="${ticket.ticketNumber}"></td>
+        <td th:text="${ticket.post != null ? 'Post #' + ticket.post.id : ''}"></td>
+        <td th:text="${ticket.problemTag}"></td>
+        <td th:text="${ticket.assignedInstitutionUser != null ? ticket.assignedInstitutionUser.id : ''}"></td>
+        <td th:text="${ticket.dispatcherUser != null ? ticket.dispatcherUser.id : ''}"></td>
+        <td th:text="${ticket.status}"></td>
+        <td th:text="${ticket.rankingScore}"></td>
+        <td th:text="${ticket.lastUpdate}"></td>
+        <td th:text="${ticket.isRedFlag}"></td>
+        <td>
+            <a th:href="@{/admin/tickets/view/{id}(id=${ticket.id})}">View</a>
+            <a th:href="@{/admin/tickets/edit/{id}(id=${ticket.id})}">Edit</a>
+            <a th:href="@{/admin/tickets/delete/{id}(id=${ticket.id})}"
+               onclick="return confirm('Sigur vrei să ștergi acest ticket?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

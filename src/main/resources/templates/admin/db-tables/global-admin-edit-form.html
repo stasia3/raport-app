@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edit Global Admin</title>
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Edit Global Admin</h1>
+
+    <form th:action="@{/global-admins/update/{id}(id=${globalAdmin.userId})}"
+          th:object="${globalAdmin}"
+          method="post">
+
+        <p>
+            <strong>User ID:</strong>
+            <span th:text="${globalAdmin.userId}"></span>
+        </p>
+
+        <p>
+            <strong>Email:</strong>
+            <span th:text="${globalAdmin.user.email}"></span>
+        </p>
+
+        <label>Admin Handle</label>
+        <input type="text" th:field="*{adminHandle}" required>
+
+        <label>Security Clearance</label>
+        <select th:field="*{securityClearance}" required>
+            <option value="">Select clearance</option>
+            <option th:each="c : ${clearances}"
+                    th:value="${c}"
+                    th:text="${c}">
+            </option>
+        </select>
+
+        <label>Master Key Hash</label>
+        <input type="text" th:field="*{masterKeyHash}" required>
+
+        <label>
+            <input type="checkbox" th:field="*{canManageTags}">
+            Can Manage Tags
+        </label>
+
+        <label>
+            <input type="checkbox" th:field="*{canManageUsers}">
+            Can Manage Users
+        </label>
+
+        <label>Last Security Audit</label>
+        <input type="datetime-local" th:field="*{lastSecurityAudit}">
+
+        <button type="submit" class="btn btn-save">Update</button>
+        <a th:href="@{/global-admins}" class="btn btn-back">Back</a>
+    </form>
+</div>
+
+</body>
+</html>

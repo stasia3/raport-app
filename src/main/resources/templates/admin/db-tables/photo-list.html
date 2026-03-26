@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photos</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Photo list</h1>
+
+<a th:href="@{/admin/photos/new}">Add new photo</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Post ID</th>
+        <th>Preview</th>
+        <th>Path</th>
+        <th>Type</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="photo : ${photos}">
+        <td th:text="${photo.id}"></td>
+        <td th:text="${photo.post != null ? photo.post.id : ''}"></td>
+        <td>
+            <img th:if="${photo.photoUrl != null}" th:src="@{${photo.photoUrl}}" alt="Photo" width="120">
+        </td>
+        <td th:text="${photo.photoUrl}"></td>
+        <td th:text="${photo.photoType}"></td>
+        <td>
+            <a th:href="@{/admin/photos/view/{id}(id=${photo.id})}">View</a>
+            <a th:href="@{/admin/photos/edit/{id}(id=${photo.id})}">Edit</a>
+            <a th:href="@{/admin/photos/delete/{id}(id=${photo.id})}"
+               onclick="return confirm('Are you sure?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

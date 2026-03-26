@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Post List</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Lista postărilor</h1>
+
+<a th:href="@{/admin/posts/new}">Adaugă postare nouă</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Creator</th>
+        <th>Title</th>
+        <th>Problem Tag</th>
+        <th>City</th>
+        <th>Street</th>
+        <th>Latitude</th>
+        <th>Longitude</th>
+        <th>Created At</th>
+        <th>Anonymous</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="post : ${posts}">
+        <td th:text="${post.id}"></td>
+        <td th:text="${post.creator != null ? post.creator.userId : ''}"></td>
+        <td th:text="${post.title}"></td>
+        <td th:text="${post.problemTag}"></td>
+        <td th:text="${post.city}"></td>
+        <td th:text="${post.street}"></td>
+        <td th:text="${post.gpsLatitude}"></td>
+        <td th:text="${post.gpsLongitude}"></td>
+        <td th:text="${post.createdAt}"></td>
+        <td th:text="${post.isAnonymous}"></td>
+        <td>
+            <a th:href="@{/admin/posts/view/{id}(id=${post.id})}">View</a>
+            <a th:href="@{/admin/posts/edit/{id}(id=${post.id})}">Edit</a>
+            <a th:href="@{/admin/posts/delete/{id}(id=${post.id})}"
+               onclick="return confirm('Sigur vrei să ștergi această postare?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

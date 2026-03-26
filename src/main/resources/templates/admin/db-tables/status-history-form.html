@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Status History Form</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1 th:text="${statusHistory.id == null} ? 'Add' : 'Edit'"></h1>
+
+<div th:if="${error}" th:text="${error}" style="color:red;"></div>
+
+<form th:action="@{/admin/status-history/save}" th:object="${statusHistory}" method="post">
+
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label>Ticket:</label>
+        <select name="ticketId" required>
+            <option value="">-- select --</option>
+            <option th:each="t : ${tickets}"
+                    th:value="${t.id}"
+                    th:text="${'Ticket #' + t.id}"
+                    th:selected="${statusHistory.ticket != null and statusHistory.ticket.id == t.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label>Status:</label>
+        <select th:field="*{changedStatus}" required>
+            <option value="">-- select --</option>
+            <option th:each="s : ${statuses}"
+                    th:value="${s}"
+                    th:text="${s}">
+            </option>
+        </select>
+    </div>
+
+    <div th:if="${statusHistory.changedAt != null}">
+        <label>Changed At:</label>
+        <span th:text="${statusHistory.changedAt}"></span>
+    </div>
+
+    <button type="submit">Save</button>
+    <a th:href="@{/admin/status-history}">Back</a>
+
+</form>
+
+</body>
+</html>

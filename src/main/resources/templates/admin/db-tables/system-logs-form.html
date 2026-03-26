@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>System Log Form</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1 th:text="${systemLog.id == null} ? 'Adaugă log' : 'Editează log'"></h1>
+
+<form th:action="@{/admin/system-logs/save}" th:object="${systemLog}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label for="actorUserId">Actor User:</label>
+        <select id="actorUserId" name="actorUserId">
+            <option value="">-- none --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${'User #' + user.id}"
+                    th:selected="${systemLog.actorUser != null and systemLog.actorUser.id == user.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="actionType">Action Type:</label>
+        <input type="text" id="actionType" th:field="*{actionType}" required />
+    </div>
+
+    <div>
+        <label for="oldValue">Old Value:</label>
+        <textarea id="oldValue" th:field="*{oldValue}"></textarea>
+    </div>
+
+    <div>
+        <label for="newValue">New Value:</label>
+        <textarea id="newValue" th:field="*{newValue}"></textarea>
+    </div>
+
+    <div th:if="${systemLog.timestamp != null}">
+        <label>Timestamp:</label>
+        <span th:text="${systemLog.timestamp}"></span>
+    </div>
+
+    <div>
+        <button type="submit">Salvează</button>
+        <a th:href="@{/admin/system-logs}">Înapoi</a>
+    </div>
+</form>
+</body>
+</html>

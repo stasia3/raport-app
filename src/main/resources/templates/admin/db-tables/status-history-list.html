@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Status History</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1>Status History</h1>
+
+<a th:href="@{/admin/status-history/new}">Add new</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Ticket</th>
+        <th>Status</th>
+        <th>Changed At</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="h : ${histories}">
+        <td th:text="${h.id}"></td>
+        <td th:text="${h.ticket != null ? h.ticket.id : ''}"></td>
+        <td th:text="${h.changedStatus}"></td>
+        <td th:text="${h.changedAt}"></td>
+        <td>
+            <a th:href="@{/admin/status-history/view/{id}(id=${h.id})}">View</a>
+            <a th:href="@{/admin/status-history/edit/{id}(id=${h.id})}">Edit</a>
+            <a th:href="@{/admin/status-history/delete/{id}(id=${h.id})}"
+               onclick="return confirm('Delete?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

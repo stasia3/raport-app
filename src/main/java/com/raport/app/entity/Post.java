@@ -46,6 +46,9 @@ public class Post {
     public Integer getId() {
         return id;
     }
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public PersoanaFizica getCreator() {
         return creator;

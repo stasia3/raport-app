@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View System Log</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Detalii log</h1>
+
+<p><strong>ID:</strong> <span th:text="${systemLog.id}"></span></p>
+<p><strong>Actor User:</strong> <span th:text="${systemLog.actorUser != null ? 'User #' + systemLog.actorUser.id : ''}"></span></p>
+<p><strong>Action Type:</strong> <span th:text="${systemLog.actionType}"></span></p>
+<p><strong>Old Value:</strong> <span th:text="${systemLog.oldValue}"></span></p>
+<p><strong>New Value:</strong> <span th:text="${systemLog.newValue}"></span></p>
+<p><strong>Timestamp:</strong> <span th:text="${systemLog.timestamp}"></span></p>
+
+<div>
+    <a th:href="@{/admin/system-logs/edit/{id}(id=${systemLog.id})}">Edit</a>
+    <a th:href="@{/admin/system-logs}">Înapoi la listă</a>
+</div>
+</body>
+</html>

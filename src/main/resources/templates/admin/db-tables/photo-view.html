@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Photo</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Photo details</h1>
+
+<p><strong>ID:</strong> <span th:text="${photo.id}"></span></p>
+<p><strong>Post ID:</strong> <span th:text="${photo.post != null ? photo.post.id : ''}"></span></p>
+<p><strong>Type:</strong> <span th:text="${photo.photoType}"></span></p>
+<p><strong>Path:</strong> <span th:text="${photo.photoUrl}"></span></p>
+
+<div th:if="${photo.photoUrl != null}">
+    <img th:src="@{${photo.photoUrl}}" alt="Photo" width="300">
+</div>
+
+<div>
+    <a th:href="@{/admin/photos/edit/{id}(id=${photo.id})}">Edit</a>
+    <a th:href="@{/admin/photos}">Back to list</a>
+</div>
+</body>
+</html>

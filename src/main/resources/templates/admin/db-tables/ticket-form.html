@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ticket Form</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1 th:text="${ticket.id == null} ? 'Adaugă ticket' : 'Editează ticket'"></h1>
+
+<div th:if="${error}" th:text="${error}" style="color:red;"></div>
+
+<form th:action="@{/admin/tickets/save}" th:object="${ticket}" method="post">
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label for="ticketNumber">Ticket Number:</label>
+        <input type="text" id="ticketNumber" th:field="*{ticketNumber}" required />
+    </div>
+
+    <div>
+        <label for="postId">Post:</label>
+        <select id="postId" name="postId" required>
+            <option value="">-- Selectează postarea --</option>
+            <option th:each="post : ${posts}"
+                    th:value="${post.id}"
+                    th:text="${'Post #' + post.id + ' - ' + post.title}"
+                    th:selected="${ticket.post != null and ticket.post.id == post.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="problemTag">Problem Tag:</label>
+        <input type="text" id="problemTag" th:field="*{problemTag}" required />
+    </div>
+
+    <div>
+        <label for="assignedInstitutionUserId">Assigned Institution User:</label>
+        <select id="assignedInstitutionUserId" name="assignedInstitutionUserId">
+            <option value="">-- none --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${'User #' + user.id}"
+                    th:selected="${ticket.assignedInstitutionUser != null and ticket.assignedInstitutionUser.id == user.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="dispatcherUserId">Dispatcher User:</label>
+        <select id="dispatcherUserId" name="dispatcherUserId">
+            <option value="">-- none --</option>
+            <option th:each="user : ${users}"
+                    th:value="${user.id}"
+                    th:text="${'User #' + user.id}"
+                    th:selected="${ticket.dispatcherUser != null and ticket.dispatcherUser.id == user.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="status">Status:</label>
+        <select id="status" th:field="*{status}" required>
+            <option value="">-- Selectează statusul --</option>
+            <option th:each="status : ${statuses}"
+                    th:value="${status}"
+                    th:text="${status}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="rankingScore">Ranking Score:</label>
+        <input type="number" id="rankingScore" th:field="*{rankingScore}" required />
+    </div>
+
+    <div>
+        <label for="isRedFlag">Red Flag:</label>
+        <input type="checkbox" id="isRedFlag" th:field="*{isRedFlag}" />
+    </div>
+
+    <div th:if="${ticket.lastUpdate != null}">
+        <label>Last Update:</label>
+        <span th:text="${ticket.lastUpdate}"></span>
+    </div>
+
+    <div>
+        <button type="submit">Salvează</button>
+        <a th:href="@{/admin/tickets}">Înapoi</a>
+    </div>
+</form>
+</body>
+</html>

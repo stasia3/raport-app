@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>View Ticket</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Detalii ticket</h1>
+
+<p><strong>ID:</strong> <span th:text="${ticket.id}"></span></p>
+<p><strong>Ticket Number:</strong> <span th:text="${ticket.ticketNumber}"></span></p>
+<p><strong>Post:</strong> <span th:text="${ticket.post != null ? 'Post #' + ticket.post.id + ' - ' + ticket.post.title : ''}"></span></p>
+<p><strong>Problem Tag:</strong> <span th:text="${ticket.problemTag}"></span></p>
+<p><strong>Assigned Institution User:</strong> <span th:text="${ticket.assignedInstitutionUser != null ? ticket.assignedInstitutionUser.id : ''}"></span></p>
+<p><strong>Dispatcher User:</strong> <span th:text="${ticket.dispatcherUser != null ? ticket.dispatcherUser.id : ''}"></span></p>
+<p><strong>Status:</strong> <span th:text="${ticket.status}"></span></p>
+<p><strong>Ranking Score:</strong> <span th:text="${ticket.rankingScore}"></span></p>
+<p><strong>Last Update:</strong> <span th:text="${ticket.lastUpdate}"></span></p>
+<p><strong>Red Flag:</strong> <span th:text="${ticket.isRedFlag}"></span></p>
+
+<div>
+    <a th:href="@{/admin/tickets/edit/{id}(id=${ticket.id})}">Edit</a>
+    <a th:href="@{/admin/tickets}">Înapoi la listă</a>
+</div>
+</body>
+</html>

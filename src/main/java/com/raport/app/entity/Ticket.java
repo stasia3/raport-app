@@ -2,6 +2,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.TicketStatus;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -32,7 +34,8 @@ public class Ticket {
     private User dispatcherUser;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "status", nullable = false, columnDefinition = "ticket_enum")
     private TicketStatus status = TicketStatus.Sesizat;
 
     @Column(name = "ranking_score", nullable = false)
@@ -46,6 +49,9 @@ public class Ticket {
 
     public Integer getId() {
         return id;
+    }
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public String getTicketNumber() {

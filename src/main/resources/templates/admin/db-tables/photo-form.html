@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Photo Form</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1 th:text="${photo.id == null} ? 'Add photo' : 'Edit photo'"></h1>
+
+<div th:if="${error}" th:text="${error}" style="color:red;"></div>
+
+<form th:action="@{/admin/photos/save}" th:object="${photo}" method="post" enctype="multipart/form-data">
+    <input type="hidden" th:field="*{id}" />
+
+    <div>
+        <label for="postId">Post:</label>
+        <select name="postId" id="postId" required>
+            <option value="">-- Select post --</option>
+            <option th:each="post : ${posts}"
+                    th:value="${post.id}"
+                    th:text="${'Post #' + post.id}"
+                    th:selected="${photo.post != null and photo.post.id == post.id}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="photoType">Photo Type:</label>
+        <select id="photoType" th:field="*{photoType}" required>
+            <option value="">-- Select type --</option>
+            <option th:each="type : ${photoTypes}"
+                    th:value="${type}"
+                    th:text="${type}">
+            </option>
+        </select>
+    </div>
+
+    <div>
+        <label for="imageFile">Choose image:</label>
+        <input type="file" id="imageFile" name="imageFile" accept="image/*" />
+    </div>
+
+    <div th:if="${photo.photoUrl != null}">
+        <p>Current image:</p>
+        <img th:src="@{${photo.photoUrl}}" alt="Photo" width="200">
+    </div>
+
+    <div>
+        <button type="submit">Save</button>
+        <a th:href="@{/admin/photos}">Back</a>
+    </div>
+</form>
+</body>
+</html>

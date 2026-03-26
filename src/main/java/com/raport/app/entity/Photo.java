@@ -2,6 +2,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.PhotoType;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 @Entity
 @Table(name = "photo")
@@ -19,11 +21,16 @@ public class Photo {
     private String photoUrl;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "photo_type", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "photo_type", nullable = false, columnDefinition = "photo_enum")
     private PhotoType photoType;
 
     public Integer getId() {
         return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Post getPost() {

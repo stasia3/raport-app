@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Vote List</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<h1>Lista voturilor</h1>
+
+<a th:href="@{/admin/votes/new}">Adaugă vot</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Post</th>
+        <th>Value</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="v : ${votes}">
+        <td th:text="${v.id}"></td>
+        <td th:text="${v.user != null ? 'User #' + v.user.id : ''}"></td>
+        <td th:text="${v.post != null ? 'Post #' + v.post.id : ''}"></td>
+        <td th:text="${v.value}"></td>
+        <td>
+            <a th:href="@{/admin/votes/view/{id}(id=${v.id})}">View</a>
+            <a th:href="@{/admin/votes/edit/{id}(id=${v.id})}">Edit</a>
+            <a th:href="@{/admin/votes/delete/{id}(id=${v.id})}"
+               onclick="return confirm('Delete?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

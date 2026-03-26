@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>System Logs</title>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+<h1>Lista logurilor de sistem</h1>
+
+<a th:href="@{/admin/system-logs/new}">Adaugă log nou</a>
+<a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Actor User</th>
+        <th>Action Type</th>
+        <th>Old Value</th>
+        <th>New Value</th>
+        <th>Timestamp</th>
+        <th>Acțiuni</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="log : ${logs}">
+        <td th:text="${log.id}"></td>
+        <td th:text="${log.actorUser != null ? 'User #' + log.actorUser.id : ''}"></td>
+        <td th:text="${log.actionType}"></td>
+        <td th:text="${log.oldValue}"></td>
+        <td th:text="${log.newValue}"></td>
+        <td th:text="${log.timestamp}"></td>
+        <td>
+            <a th:href="@{/admin/system-logs/view/{id}(id=${log.id})}">View</a>
+            <a th:href="@{/admin/system-logs/edit/{id}(id=${log.id})}">Edit</a>
+            <a th:href="@{/admin/system-logs/delete/{id}(id=${log.id})}"
+               onclick="return confirm('Sigur vrei să ștergi acest log?')">Delete</a>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>

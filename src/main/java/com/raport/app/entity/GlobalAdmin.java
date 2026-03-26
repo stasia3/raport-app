@@ -2,6 +2,8 @@ package com.raport.app.entity;
 
 import com.raport.app.entity.enums.GlobalAdminClearance;
 import jakarta.persistence.*;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -21,7 +23,8 @@ public class GlobalAdmin {
     private String adminHandle;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "security_clearance", nullable = false)
+    @JdbcTypeCode(SqlTypes.NAMED_ENUM)
+    @Column(name = "security_clearance", nullable = false, columnDefinition = "global_admin_clearance_enum")
     private GlobalAdminClearance securityClearance;
 
     @Column(name = "master_key_hash", nullable = false, length = 255)

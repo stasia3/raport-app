@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Global Admins</title>
+    <link rel="stylesheet" th:href="@{/css/styles_admin.css}">
+</head>
+<body>
+
+<div class="container">
+    <h1>Global Admins</h1>
+
+    <a th:href="@{/global-admins/new}" class="btn btn-add">Add Global Admin</a>
+    <a th:href="@{/admin}" class="btn btn-back">Admin Panel</a>
+
+    <table>
+        <thead>
+        <tr>
+            <th>User ID</th>
+            <th>Email</th>
+            <th>Admin Handle</th>
+            <th>Security Clearance</th>
+            <th>Can Manage Tags</th>
+            <th>Can Manage Users</th>
+            <th>Last Security Audit</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="ga : ${globalAdmins}">
+            <td th:text="${ga.userId}"></td>
+            <td th:text="${ga.user != null ? ga.user.email : ''}"></td>
+            <td th:text="${ga.adminHandle}"></td>
+            <td th:text="${ga.securityClearance}"></td>
+            <td th:text="${ga.canManageTags}"></td>
+            <td th:text="${ga.canManageUsers}"></td>
+            <td th:text="${ga.lastSecurityAudit}"></td>
+            <td>
+                <a th:href="@{/global-admins/edit/{id}(id=${ga.userId})}" class="btn btn-edit">Edit</a>
+                <a th:href="@{/global-admins/delete/{id}(id=${ga.userId})}" class="btn btn-delete">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
