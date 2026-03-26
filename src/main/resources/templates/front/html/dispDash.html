@@ -15,9 +15,7 @@
      ============================================================ -->
 <div class="onboard-overlay" id="onboardOverlay" style="display:none">
     <div class="onboard-box">
-        <div style="width:38px;height:38px;background:var(--accent);border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;">
-            <svg width="18" height="18" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-        </div>
+        <div class="inst-brand-mark" style="margin-bottom:1.25rem;">CR</div>
         <h2>Selectați Zona Operațională</h2>
         <p>Contul dvs. de dispecer nu are o zonă atribuită. Selectați județul sau sectorul pe care îl veți gestiona pentru a continua.</p>
         <select class="onboard-select" id="onboardSelect">
@@ -88,15 +86,15 @@
 
     <!-- Top Command Bar -->
     <header class="cmd-bar">
-<!--        <div class="cmd-logo">-->
-<!--            <div class="cmd-mark">CR</div>-->
-<!--            <span class="cmd-brand">CivicReport</span>-->
-<!--        </div>-->
+        <!--        <div class="cmd-logo">-->
+        <!--            <div class="cmd-mark">CR</div>-->
+        <!--            <span class="cmd-brand">CivicReport</span>-->
+        <!--        </div>-->
         <div class="cmd-logo">
             <div class="inst-brand-mark">CR</div>
             <div>
                 <div class="inst-brand-title">CivicReport</div>
-                <div class="inst-brand-subtitle">Execuție instituție</div>
+                <div class="inst-brand-subtitle">Panou dispecer</div>
             </div>
         </div>
         <div class="cmd-divider"></div>
@@ -350,7 +348,7 @@
                     <span class="action-label">Marcare duplicat:</span>
                     <div class="duplicate-row">
                         <input type="text" class="duplicate-input" id="dup-id-input" placeholder="Introduceți nr. tichet principal (ex: #TK-0042)">
-                        <button class="btn-danger" onclick="markDuplicate()">Marchează Duplicat</button>
+                        <button class="btn btn-danger-outline" onclick="markDuplicate()">Marchează Duplicat</button>
                     </div>
                 </div>
             </div>
@@ -358,9 +356,9 @@
 
         <div class="modal-footer">
             <span class="modal-footer-note">Acțiunea va fi înregistrată în SYSTEM_LOGS cu timestamp și ID dispecer.</span>
-            <button class="btn-submit" onclick="submitAction()">
+            <button class="btn btn-primary" onclick="submitAction()">
                 <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
-                TRIMITE
+                Trimite
             </button>
         </div>
     </div>
@@ -679,7 +677,7 @@ function saveZone() {
         const isOverdue = (Date.now() - t.created_at) > 24*3600000;
 
         const hotspotHtml = t._hotspot
-          ? `<div class="hotspot-badge">🔥 Hotspot · ${t._hotspot_count} similare</div>`
+          ? `<div class="hotspot-badge">Hotspot · ${t._hotspot_count} similare</div>`
           : '';
 
         const tagHtml = `<span class="tag-chip">${t.problem_tag}</span>`;
@@ -697,7 +695,7 @@ function saveZone() {
             </div>
           </td>
           <td><span class="location-text">${t.street}</span></td>
-          <td><span class="time-text ${isOverdue ? 'time-overdue' : ''}">${timeAgo}${isOverdue ? ' ⚠' : ''}</span></td>
+          <td><span class="time-text ${isOverdue ? 'time-overdue' : ''}">${timeAgo}</span></td>
           <td>${statusHtml}</td>
           <td>${flagHtml}</td>
           <td><button class="action-open" onclick="event.stopPropagation();openModal(${t.id})">Deschide →</button></td>
@@ -733,7 +731,7 @@ function saveZone() {
       // Status badge
       const badge = document.getElementById('modal-status-badge');
       badge.className = `status-badge ${t.is_red_flag ? 'status-action' : 'status-dispatcher'}`;
-      badge.textContent = t.is_red_flag ? '⚑ Urgentă' : 'În așteptare';
+      badge.textContent = t.is_red_flag ? 'Urgentă' : 'În așteptare';
 
       // Reset action inputs
       document.getElementById('action-tag').value = '';
