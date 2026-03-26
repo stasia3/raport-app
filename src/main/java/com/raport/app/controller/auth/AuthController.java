@@ -4,8 +4,10 @@ import com.raport.app.entity.PersoanaFizica;
 import com.raport.app.entity.User;
 import com.raport.app.entity.enums.PersoanaFizicaUserType;
 import com.raport.app.entity.enums.UserRole;
+import com.raport.app.repository.UserRepository;
 import com.raport.app.service.PersoanaFizicaService;
 import com.raport.app.service.UserService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -16,10 +18,14 @@ public class AuthController {
 
     private final UserService userService;
     private final PersoanaFizicaService persFizService;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AuthController(UserService userService, PersoanaFizicaService persFizService) {
+    public AuthController(UserService userService, PersoanaFizicaService persFizService, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userService = userService;
         this.persFizService = persFizService;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping("/login")
@@ -27,20 +33,20 @@ public class AuthController {
         return rootFolder + "login";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestParam String email,
-                        @RequestParam String password,
-                        Model model) {
-
-        User user = userService.findByEmail(email);
-
-        if (user == null || !user.getPasswordHash().equals(password)) {
-            model.addAttribute("error", "Invalid email or password");
-            return rootFolder + "login";
-        }
-
-        return "redirect:/admin";
-    }
+//    @PostMapping("/login")
+//    public String login(@RequestParam String email,
+//                        @RequestParam String password,
+//                        Model model) {
+//
+//        User user = userService.findByEmail(email);
+//
+//        if (user == null || !user.getPasswordHash().equals(password)) {
+//            model.addAttribute("error", "Invalid email or password");
+//            return rootFolder + "login";
+//        }
+//
+//        return "redirect:/admin";
+//    }
 
     @GetMapping("/register")
     public String registerPage(Model model) {
@@ -70,7 +76,7 @@ public class AuthController {
         PersoanaFizica persFiz = new PersoanaFizica();
 
         user.setEmail(email);
-        user.setPasswordHash(password);
+        user.setPasswordHash(passwordEncoder.encode(password));
         user.setUserRole(UserRole.Citizen);
         userService.saveUser(user);
 
@@ -86,3 +92,4 @@ public class AuthController {
         return "redirect:/login";
     }
 }
+

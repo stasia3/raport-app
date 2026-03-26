@@ -9,8 +9,6 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(Model model) {
-        model.addAttribute("title", "Prima mea pagină");
-        model.addAttribute("message", "Aplicația merge cu Spring Boot + Thymeleaf.");
-        return "home";
+        return "redirect:/feed";
     }
 }
