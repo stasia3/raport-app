@@ -2,8 +2,10 @@ package com.raport.app.controller;
 
 import com.raport.app.entity.PersoanaFizica;
 import com.raport.app.entity.Post;
+import com.raport.app.entity.User;
 import com.raport.app.repository.PersoanaFizicaRepository;
 import com.raport.app.repository.PostRepository;
+import com.raport.app.repository.UserRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;

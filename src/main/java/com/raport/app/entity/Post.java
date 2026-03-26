@@ -13,7 +13,7 @@ public class Post {
     private Integer id;
 
     @ManyToOne
-    @JoinColumn(name = "creator_user_id", nullable = false)
+    @JoinColumn(name = "creator_user_id", nullable = true) // guest allowed
     private PersoanaFizica creator;
 
     @Column(nullable = false, length = 255)
@@ -22,6 +22,7 @@ public class Post {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
+    // category din HTML
     @Column(name = "problem_tag", nullable = false, length = 100)
     private String problemTag;
 
@@ -31,10 +32,16 @@ public class Post {
     @Column(nullable = false, length = 255)
     private String street;
 
-    @Column(name = "gps_latitude", nullable = false)
+    @Column(length = 100)
+    private String district;
+
+    @Column(length = 255)
+    private String landmark;
+
+    @Column(name = "gps_latitude")
     private Double gpsLatitude;
 
-    @Column(name = "gps_longitude", nullable = false)
+    @Column(name = "gps_longitude")
     private Double gpsLongitude;
 
     @Column(name = "created_at", nullable = false)
@@ -43,9 +50,15 @@ public class Post {
     @Column(name = "is_anonymous", nullable = false)
     private Boolean isAnonymous = false;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private java.util.List<Photo> photos = new java.util.ArrayList<>();
+
+    // ===== getters & setters =====
+
     public Integer getId() {
         return id;
     }
+
     public void setId(Integer id) {
         this.id = id;
     }
@@ -98,6 +111,22 @@ public class Post {
         this.street = street;
     }
 
+    public String getDistrict() {
+        return district;
+    }
+
+    public void setDistrict(String district) {
+        this.district = district;
+    }
+
+    public String getLandmark() {
+        return landmark;
+    }
+
+    public void setLandmark(String landmark) {
+        this.landmark = landmark;
+    }
+
     public Double getGpsLatitude() {
         return gpsLatitude;
     }
@@ -129,4 +158,13 @@ public class Post {
     public void setIsAnonymous(Boolean anonymous) {
         isAnonymous = anonymous;
     }
+
+    public java.util.List<Photo> getPhotos() {
+        return photos;
+    }
+
+    public void setPhotos(java.util.List<Photo> photos) {
+        this.photos = photos;
+    }
+
 }
