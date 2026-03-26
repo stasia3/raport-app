@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicReport — Postările Mele</title>
+    <link rel="stylesheet" href="../generalStyles.css" />
+    <link rel="stylesheet" href="../myPostsStyles.css" />
+</head>
+<body>
+
+<div class="app-layout">
+
+    <!-- ═══ SIDEBAR ═══ -->
+    <aside class="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-mark">CR</div>
+            <span class="sidebar-brand-name">CivicReport</span>
+        </div>
+
+        <ul class="sidebar-nav">
+            <li>
+                <a href="feed.html">
+                    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="2" y="2" width="6" height="6" rx="1"/><rect x="10" y="2" width="6" height="6" rx="1"/>
+                        <rect x="2" y="10" width="6" height="6" rx="1"/><rect x="10" y="10" width="6" height="6" rx="1"/>
+                    </svg>
+                    <span>Feed</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                        <path d="M9 2C6.79 2 5 3.79 5 6c0 3.5 4 10 4 10s4-6.5 4-10c0-2.21-1.79-4-4-4z"/>
+                        <circle cx="9" cy="6" r="1.5"/>
+                    </svg>
+                    <span>Hartă</span>
+                </a>
+            </li>
+            <li>
+                <a href="myPosts.html" class="active">
+                    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
+                        <path d="M3 4h12M3 8h8M3 12h10"/>
+                    </svg>
+                    <span>Postările mele</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="9" cy="9" r="2.5"/>
+                        <path d="M9 1.5v2M9 14.5v2M1.5 9h2M14.5 9h2M3.4 3.4l1.4 1.4M13.2 13.2l1.4 1.4M3.4 14.6l1.4-1.4M13.2 4.8l1.4-1.4"/>
+                    </svg>
+                    <span>Setări</span>
+                </a>
+            </li>
+            <li class="nav-sep" role="separator"></li>
+            <li>
+                <a href="index.html">
+                    <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M7 3H3a1 1 0 00-1 1v10a1 1 0 001 1h4M12 12l3-3-3-3M6 9h9"/>
+                    </svg>
+                    <span>Ieșire</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-user">
+            <div class="user-avatar">IP</div>
+            <div class="user-info">
+                <div class="user-name">Ion Popescu</div>
+                <div class="user-role">Cetățean</div>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ═══ MAIN CONTENT ═══ -->
+    <div class="main-content">
+
+        <!-- Topbar -->
+        <header class="topbar">
+            <div class="topbar-left">
+                <h2>Postările mele</h2>
+                <p>Rapoartele tale și evoluția lor în sistem</p>
+            </div>
+        </header>
+
+        <div class="feed-container">
+
+            <!-- ══ STATS STRIP ══ -->
+            <div class="my-stats">
+                <div class="stat-pill">
+                    <div class="stat-num">6</div>
+                    <div class="stat-label">Total rapoarte</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-num">2</div>
+                    <div class="stat-label">Rezolvate</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-num">3</div>
+                    <div class="stat-label">În progres</div>
+                </div>
+                <div class="stat-pill">
+                    <div class="stat-num">1</div>
+                    <div class="stat-label">În verificare</div>
+                </div>
+            </div>
+
+            <!-- ══ COMPOSER ══ -->
+            <div class="composer-wrapper" id="composer">
+                <!-- Collapsed trigger -->
+                <div class="composer-trigger" id="composer-trigger">
+                    <div class="composer-avatar">IP</div>
+                    <div class="composer-placeholder" role="button" aria-label="Creează raport nou">Ce problemă vrei să raportezi?</div>
+                </div>
+                <!-- Expanded body -->
+                <div class="composer-body" id="composer-body">
+                    <div class="composer-header-row">
+                        <div class="composer-avatar" style="width:36px;height:36px;font-size:.7rem;">IP</div>
+                        <div>
+                            <div class="composer-username">Ion Popescu</div>
+                            <div class="composer-subtitle">Raport public · București</div>
+                        </div>
+                    </div>
+
+                    <div class="composer-field" style="padding-top:.35rem;">
+                        <label for="c-title">Titlu raport <span style="color:#ef4444">*</span></label>
+                        <input type="text" id="c-title" placeholder="Ex: Groapă pe carosabil, Stâlp defect..." />
+                    </div>
+
+                    <div class="composer-row2">
+                        <div>
+                            <label style="font-size:.76rem;font-weight:600;color:var(--text-secondary,#6b7280);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.3rem;">Categorie <span style="color:#ef4444">*</span></label>
+                            <select id="c-cat" style="width:100%;box-sizing:border-box;border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:.6rem .85rem;font-size:.86rem;background:var(--surface-alt,#f9fafb);color:var(--text,#111827);font-family:inherit;outline:none;">
+                                <option value="" disabled selected>Selectează</option>
+                                <option>Infrastructură rutieră</option>
+                                <option>Iluminat public</option>
+                                <option>Salubritate</option>
+                                <option>Trafic și semnalizare</option>
+                                <option>Spații verzi</option>
+                                <option>Transport public</option>
+                                <option>Vandalism</option>
+                                <option>Altele</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label style="font-size:.76rem;font-weight:600;color:var(--text-secondary,#6b7280);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:.3rem;">Adresă <span style="color:#ef4444">*</span></label>
+                            <input type="text" id="c-addr" placeholder="Stradă, număr, sector…" style="width:100%;box-sizing:border-box;border:1px solid var(--border,#e5e7eb);border-radius:8px;padding:.6rem .85rem;font-size:.86rem;background:var(--surface-alt,#f9fafb);color:var(--text,#111827);font-family:inherit;outline:none;" />
+                        </div>
+                    </div>
+
+                    <div class="composer-field">
+                        <label for="c-desc">Descriere <span style="color:#ef4444">*</span></label>
+                        <textarea id="c-desc" placeholder="Descrie problema în detaliu: ce s-a întâmplat, de când există, ce riscuri prezintă…"></textarea>
+                    </div>
+
+                    <div class="composer-divider"></div>
+
+                    <!-- Photo + actions bar -->
+                    <div class="composer-footer">
+                        <div class="composer-quick-actions">
+                            <label class="composer-quick-btn" for="composer-photo-input">
+                                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+                                    <rect x="2" y="4" width="14" height="11" rx="2"></rect>
+                                    <circle cx="9" cy="9.5" r="2.5"></circle>
+                                    <path d="M6.5 4L7.5 2h3l1 2"></path>
+                                </svg>
+                                Fotografii
+                            </label>
+                            <input type="file" id="composer-photo-input" accept="image/*" multiple style="display:none" />
+                            <button type="button" class="composer-quick-btn" id="geo-btn-composer">
+                                <svg width="14" height="14" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M9 2C6.79 2 5 3.79 5 6c0 3.5 4 8 4 8s4-4.5 4-8c0-2.21-1.79-4-4-4z"/><circle cx="9" cy="6" r="1.5"/></svg>
+                                Locație GPS
+                            </button>
+                        </div>
+                        <div style="display:flex;gap:.5rem;align-items:center;">
+                            <button type="button" id="composer-cancel" style="background:none;border:none;font-size:.82rem;color:var(--text-muted,#9ca3af);cursor:pointer;padding:.4rem .6rem;">Anulează</button>
+                            <button type="button" class="composer-submit" id="composer-submit-btn">Publică raportul</button>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /composer -->
+
+            <!-- ══ FILTER CHIPS ══ -->
+            <div class="feed-meta" style="margin-bottom:.65rem;">
+                <p><strong>6 rapoarte</strong> proprii</p>
+            </div>
+            <div class="filter-bar" role="group" aria-label="Filtrare după status" style="margin-bottom:1.25rem;">
+                <button class="filter-chip active">Toate</button>
+                <button class="filter-chip">În verificare</button>
+                <button class="filter-chip">Repartizat</button>
+                <button class="filter-chip">Trimis</button>
+                <button class="filter-chip">În acțiune</button>
+                <button class="filter-chip">Rezolvat</button>
+            </div>
+
+            <!-- ════════════════════
+                 POST CARDS
+            ════════════════════ -->
+
+            <!-- POST 1 — În acțiune, cu carousel -->
+            <article class="post-card" data-post-id="1">
+                <div class="carousel">
+                    <div class="carousel-track" id="track-my1">
+                        <div class="carousel-slide"><span class="carousel-placeholder">Fotografie 1 / 2</span></div>
+                        <div class="carousel-slide"><span class="carousel-placeholder">Fotografie 2 / 2</span></div>
+                    </div>
+                    <button class="carousel-btn prev" onclick="slideStop(event,'track-my1',-1)" aria-label="Anterior">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1.5L3 5l3.5 3.5"/></svg>
+                    </button>
+                    <button class="carousel-btn next" onclick="slideStop(event,'track-my1', 1)" aria-label="Următor">
+                        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 1.5L7 5l-3.5 3.5"/></svg>
+                    </button>
+                    <div class="carousel-dots">
+                        <span class="carousel-dot active"></span><span class="carousel-dot"></span>
+                    </div>
+                    <span class="carousel-count">1 / 2</span>
+                </div>
+                <div class="post-body">
+                    <div class="post-meta-top">
+                        <span class="post-tag">Salubritate</span>
+                        <span class="post-time">acum 3 zile</span>
+                        <span class="post-location">
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+              Parc Tineretului
+            </span>
+                    </div>
+                    <h3 class="post-title">Coșuri de gunoi distruse în parcul de lângă lac <span class="post-own-label">Al meu</span></h3>
+                    <p class="post-desc">Trei coșuri din zona de promenadă au fost vandalizate. Gunoiul se acumulează pe alei.</p>
+                    <div><span class="status-badge status-action">În acțiune</span></div>
+                    <div class="post-footer">
+                        <div class="post-author">
+                            <div class="author-avatar">IP</div>
+                            <span class="author-name">Ion Popescu</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="event.stopPropagation()">Susține · 5</button>
+                            <button class="action-btn" onclick="event.stopPropagation()">Comentarii · 1</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- POST 2 — Rezolvat -->
+            <article class="post-card" data-post-id="2">
+                <div class="post-body" style="padding-top:1.35rem;">
+                    <div class="post-meta-top">
+                        <span class="post-tag">Infrastructură</span>
+                        <span class="post-time">acum 12 zile</span>
+                        <span class="post-location">
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+              Str. Florilor, Sector 2
+            </span>
+                    </div>
+                    <h3 class="post-title">Trotuar deteriorat — risc de accidentare <span class="post-own-label">Al meu</span></h3>
+                    <p class="post-desc">Plăci de trotuar ridicate și crăpate pe o lungime de aprox. 15 m, în fața unui bloc cu bătrâni.</p>
+                    <div><span class="status-badge status-resolved">Rezolvat</span></div>
+                    <div class="post-footer">
+                        <div class="post-author">
+                            <div class="author-avatar">IP</div>
+                            <span class="author-name">Ion Popescu</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="event.stopPropagation()">Susține · 14</button>
+                            <button class="action-btn" onclick="event.stopPropagation()">Comentarii · 3</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- POST 3 — Trimis instituției -->
+            <article class="post-card" data-post-id="3">
+                <div class="post-body" style="padding-top:1.35rem;">
+                    <div class="post-meta-top">
+                        <span class="post-tag">Iluminat public</span>
+                        <span class="post-time">acum 7 zile</span>
+                        <span class="post-location">
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+              Calea Văcărești 88
+            </span>
+                    </div>
+                    <h3 class="post-title">Stâlp de iluminat inclinat — pericol de cădere <span class="post-own-label">Al meu</span></h3>
+                    <p class="post-desc">Stâlpul este vizibil înclinat la aproximativ 30°, cu semne de rugină la bază. Vântul puternic poate provoca prăbușirea.</p>
+                    <div><span class="status-badge status-sent">Trimis instituției</span></div>
+                    <div class="post-footer">
+                        <div class="post-author">
+                            <div class="author-avatar">IP</div>
+                            <span class="author-name">Ion Popescu</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="event.stopPropagation()">Susține · 9</button>
+                            <button class="action-btn" onclick="event.stopPropagation()">Comentarii · 0</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- POST 4 — În verificare -->
+            <article class="post-card" data-post-id="4">
+                <div class="post-body" style="padding-top:1.35rem;">
+                    <div class="post-meta-top">
+                        <span class="post-tag">Spații verzi</span>
+                        <span class="post-time">ieri, 09:14</span>
+                        <span class="post-location">
+              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>
+              Parc IOR, Sector 3
+            </span>
+                    </div>
+                    <h3 class="post-title">Copac căzut blochează aleea principală <span class="post-own-label">Al meu</span></h3>
+                    <p class="post-desc">Un copac a căzut în urma furtunii de ieri noapte, blocând complet aleea și daunând gardul parcului.</p>
+                    <div><span class="status-badge status-verifying">În verificare</span></div>
+                    <div class="post-footer">
+                        <div class="post-author">
+                            <div class="author-avatar">IP</div>
+                            <span class="author-name">Ion Popescu</span>
+                        </div>
+                        <div class="post-actions">
+                            <button class="action-btn" onclick="event.stopPropagation()">Susține · 3</button>
+                            <button class="action-btn" onclick="event.stopPropagation()">Comentarii · 0</button>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </div><!-- /feed-container -->
+    </div><!-- /main-content -->
+</div><!-- /app-layout -->
+
+
+<!-- ═══ TIMELINE MODAL ═══ -->
+<div class="modal-backdrop" id="modal-backdrop" role="dialog" aria-modal="true" aria-label="Detalii raport">
+    <div class="timeline-panel" id="timeline-panel">
+        <div class="panel-header">
+            <button class="panel-close" id="panel-close-btn" aria-label="Închide">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 1l10 10M11 1L1 11"/></svg>
+            </button>
+            <div class="panel-title" id="panel-title">—</div>
+            <div class="panel-meta" id="panel-meta">—</div>
+        </div>
+        <div class="panel-body" id="panel-body">
+            <!-- injected by JS -->
+        </div>
+    </div>
+</div>
+
+<script src="../js/myPostsData.js"></script>
+<script src="../js/myPosts.js"></script>
+
+</body>
+</html>
