@@ -4,6 +4,7 @@ import com.raport.app.entity.Institution;
 import com.raport.app.entity.Ticket;
 import com.raport.app.service.institution.InstitutionDashboardService;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,18 +25,15 @@ public class InstitutionDashboardController {
 
     @GetMapping("/dashboard")
     public String dashboard(
-            HttpSession session,
+            Authentication authentication,
             Model model,
             @RequestParam(required = false) String status,
-            @RequestParam(required = false) String search
-    ) {
-        Integer userId = getLoggedUserId(session);
-        if (userId == null) {
-            return "redirect:/";
-        }
+            @RequestParam(required = false) String search )  {
 
-        Institution institution = institutionDashboardService.getInstitutionByUserId(userId);
-        List<Ticket> tickets = institutionDashboardService.getTicketsForInstitution(institution.getUserId());
+        String email = authentication.getName();
+
+        Institution institution = institutionDashboardService.getInstitutionByUserEmail(email);
+        List<Ticket> tickets = institutionDashboardService.getTicketsForInstitution(institution.getUser().getId());
 
         if (status != null && !status.isBlank()) {
             tickets = tickets.stream()
@@ -61,106 +59,48 @@ public class InstitutionDashboardController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("searchValue", search);
 
-//        return institutionDashboardService.getDashboardViewName();
-        return rootFolder + "institutionDash.html";
+        return rootFolder + "institution-dash";
     }
-
 
     @GetMapping("/ticket/{id}")
     public String ticketDetail(@PathVariable Integer id,
-                               HttpSession session,
+                               Authentication authentication,
                                Model model) {
-        Integer userId = getLoggedUserId(session);
-        if (userId == null) {
-            return "redirect:/";
-        }
+        String email = authentication.getName();
 
-        Institution institution = institutionDashboardService.getInstitutionByUserId(userId);
-        Ticket ticket = institutionDashboardService.getTicketForInstitution(id, institution.getUserId());
+        Institution institution = institutionDashboardService.getInstitutionByUserEmail(email);
+        Ticket ticket = institutionDashboardService.getTicketForInstitution(id, institution.getUser().getId());
 
         model.addAttribute("institution", institution);
         model.addAttribute("ticket", ticket);
+        model.addAttribute("isAuthenticated", true);
 
-        return institutionDashboardService.getTicketDetailViewName();
+        return rootFolder + "institution-ticket-detail";
     }
 
     @PostMapping("/ticket/{id}/accept")
-    public String acceptTicket(@PathVariable Integer id, HttpSession session) {
-        Integer userId = getLoggedUserId(session);
-        if (userId == null) {
-            return "redirect:/";
-        }
+    public String acceptTicket(@PathVariable Integer id, Authentication authentication) {
+        String email = authentication.getName();
 
-        institutionDashboardService.acceptTicket(id, userId);
+        institutionDashboardService.acceptTicket(id, email);
         return "redirect:/institution/ticket/" + id;
     }
 
     @PostMapping("/ticket/{id}/in-work")
-    public String markInWork(@PathVariable Integer id, HttpSession session) {
-        Integer userId = getLoggedUserId(session);
-        if (userId == null) {
-            return "redirect:/";
-        }
+    public String markInWork(@PathVariable Integer id, Authentication authentication) {
+        String email = authentication.getName();
 
-        institutionDashboardService.markTicketInWork(id, userId);
+        institutionDashboardService.markTicketInWork(id, email);
         return "redirect:/institution/ticket/" + id;
     }
 
     @PostMapping("/ticket/{id}/resolve")
-    public String resolveTicket(@PathVariable Integer id, HttpSession session) {
-        Integer userId = getLoggedUserId(session);
-        if (userId == null) {
-            return "redirect:/";
-        }
+    public String resolveTicket(@PathVariable Integer id, Authentication authentication) {
+        String email = authentication.getName();
 
-        institutionDashboardService.resolveTicket(id, userId);
+        institutionDashboardService.resolveTicket(id, email);
         return "redirect:/institution/ticket/" + id;
     }
-
-
-//    ASTA AR TREBUI SA FIE VERSIUNEA CORECTA
-    private Integer getLoggedUserId(HttpSession session) {
-        Object userIdObj = session.getAttribute("userId");
-
-        if (userIdObj instanceof Integer) {
-            return (Integer) userIdObj;
-        }
-        if (userIdObj instanceof Long) {
-            return ((Long) userIdObj).intValue();
-        }
-        if (userIdObj instanceof String) {
-            try {
-                return Integer.valueOf((String) userIdObj);
-            } catch (NumberFormatException ignored) {
-                return null;
-            }
-        }
-
-        return null;
-    }
-
-//    ASTA E DE TEST
-//    private Integer getLoggedUserId(HttpSession session) {
-//        Object userIdObj = session.getAttribute("userId");
-//
-//        if (userIdObj instanceof Integer) {
-//            return (Integer) userIdObj;
-//        }
-//        if (userIdObj instanceof Long) {
-//            return ((Long) userIdObj).intValue();
-//        }
-//        if (userIdObj instanceof String) {
-//            try {
-//                return Integer.valueOf((String) userIdObj);
-//            } catch (NumberFormatException ignored) {
-//            }
-//        }
-//
-//        // TEMPORAR pentru test local
-//        session.setAttribute("userId", 9);
-//        return 9;
-//    }
-
 
     private boolean contains(String value, String q) {
         return value != null && value.toLowerCase().contains(q);

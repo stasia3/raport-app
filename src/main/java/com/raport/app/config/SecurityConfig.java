@@ -52,6 +52,7 @@ public class SecurityConfig {
                         ).permitAll()
                         .requestMatchers("/admin/**").hasRole("GlobalAdmin")
                         .requestMatchers("/dispatcher/**").hasAnyRole("Dispatcher", "GlobalAdmin")
+                        .requestMatchers("/institution/**").hasAnyRole("Institution", "GlobalAdmin")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

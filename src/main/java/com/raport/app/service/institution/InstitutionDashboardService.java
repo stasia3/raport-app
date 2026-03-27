@@ -2,7 +2,9 @@ package com.raport.app.service.institution;
 
 import com.raport.app.entity.Institution;
 import com.raport.app.entity.Ticket;
+import com.raport.app.entity.User;
 import com.raport.app.entity.enums.TicketStatus;
+import com.raport.app.repository.UserRepository;
 import com.raport.app.repository.institution.InstitutionDashRepository;
 import com.raport.app.repository.institution.TicketDashRepository;
 import org.springframework.stereotype.Service;
@@ -16,11 +18,14 @@ public class InstitutionDashboardService {
 
     private final InstitutionDashRepository institutionDashRepository;
     private final TicketDashRepository ticketDashRepository;
+    private final UserRepository userRepository;
 
     public InstitutionDashboardService(InstitutionDashRepository institutionDashRepository,
-                                       TicketDashRepository ticketDashRepository) {
+                                       TicketDashRepository ticketDashRepository,
+                                       UserRepository userRepository) {
         this.institutionDashRepository = institutionDashRepository;
         this.ticketDashRepository = ticketDashRepository;
+        this.userRepository = userRepository;
     }
 
     public String getDashboardViewName() {
@@ -31,11 +36,12 @@ public class InstitutionDashboardService {
         return "app.institutii/institutionTicketDetail";
     }
 
-    public Institution getInstitutionByUserId(Integer userId) {
-        return institutionDashRepository.findByUserId(userId)
-                .orElseThrow(() -> new IllegalArgumentException(
-                        "Nu exista institution pentru userId-ul: " + userId
-                ));
+    public Institution getInstitutionByUserEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Userul nu a fost găsit."));
+
+        return institutionDashRepository.findByUser(user)
+                .orElseThrow(() -> new IllegalArgumentException("Instituția nu a fost găsită."));
     }
 
     public List<Ticket> getTicketsForInstitution(Integer institutionUserId) {
@@ -71,23 +77,32 @@ public class InstitutionDashboardService {
     }
 
     @Transactional
-    public void acceptTicket(Integer ticketId, Integer institutionUserId) {
-        Ticket ticket = getTicketForInstitution(ticketId, institutionUserId);
+    public void acceptTicket(Integer ticketId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Userul nu a fost găsit."));
+
+        Ticket ticket = getTicketForInstitution(ticketId, user.getId());
         ticket.setStatus(TicketStatus.Preluat);
         ticketDashRepository.save(ticket);
     }
 
     @Transactional
-    public void markTicketInWork(Integer ticketId, Integer institutionUserId) {
-        Ticket ticket = getTicketForInstitution(ticketId, institutionUserId);
+    public void markTicketInWork(Integer ticketId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Userul nu a fost găsit."));
+        Ticket ticket = getTicketForInstitution(ticketId, user.getId());
         ticket.setStatus(TicketStatus.In_Lucru);
         ticketDashRepository.save(ticket);
     }
 
     @Transactional
-    public void resolveTicket(Integer ticketId, Integer institutionUserId) {
-        Ticket ticket = getTicketForInstitution(ticketId, institutionUserId);
+    public void resolveTicket(Integer ticketId, String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Userul nu a fost găsit."));
+        Ticket ticket = getTicketForInstitution(ticketId, user.getId());
         ticket.setStatus(TicketStatus.Rezolvat);
         ticketDashRepository.save(ticket);
     }
+
+
 }

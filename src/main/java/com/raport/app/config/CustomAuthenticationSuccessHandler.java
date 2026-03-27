@@ -34,6 +34,10 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 response.sendRedirect("/admin");
                 return;
             }
+            if ("ROLE_Institution".equals(role)) {
+                response.sendRedirect("/institution/dashboard");
+                return;
+            }
 
             if ("ROLE_Citizen".equals(role)) {
                 response.sendRedirect("/feed");
