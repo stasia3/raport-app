@@ -384,8 +384,8 @@
 
     // Simulated DISPATCHER table
     const DISPATCHER_TABLE = [
-      { user_id: 1, assigned_zone: null }, // null = needs onboarding
-    ];
+  { user_id: 1, assigned_zone: 'Galați' },
+];
 
     // Simulated POSTS/TICKETS
     const ALL_TICKETS = [
@@ -445,10 +445,14 @@ document.addEventListener('DOMContentLoaded', () => {
     name: session.display_name || session.profile?.full_name || 'Dispecer'
   };
 
-  currentDispatcher = {
-    user_id: session.user_id || session.id,
-    assigned_zone: session.assigned_zone ?? session.profile?.assigned_zone ?? null
-  };
+<!--  currentDispatcher = {-->
+<!--    user_id: session.user_id || session.id,-->
+<!--    assigned_zone: session.assigned_zone ?? session.profile?.assigned_zone ?? null-->
+<!--  };-->
+    currentDispatcher = {
+  user_id: session.user_id || session.id,
+  assigned_zone: 'Galați'
+};
 
   if (window.MockDB && currentDispatcher.assigned_zone) {
     ALL_TICKETS.length = 0;
@@ -458,12 +462,13 @@ document.addEventListener('DOMContentLoaded', () => {
   updateCmdBar();
   startClock();
 
-  if (!currentDispatcher.assigned_zone) {
-    document.getElementById('onboardOverlay').style.display = 'flex';
-  } else {
-    initDashboard();
-  }
-});
+<!--  if (!currentDispatcher.assigned_zone) {-->
+<!--        document.getElementById('onboardOverlay').style.display = 'flex';-->
+<!--      } else {-->
+<!--        initDashboard();-->
+<!--      }-->
+<!--    });-->
+      initDashboard();
 
       updateCmdBar();
       startClock();
@@ -493,9 +498,17 @@ document.addEventListener('DOMContentLoaded', () => {
       setInterval(update, 1000);
     }
 
+
+
+<!--    function initDashboard() {-->
+<!--      const zone = currentDispatcher?.assigned_zone || '—';-->
+<!--      document.getElementById('cmd-zone-name').textContent = zone;-->
+<!--      loadTickets();-->
+<!--    }-->
+
     function initDashboard() {
-      const zone = currentDispatcher?.assigned_zone || '—';
-      document.getElementById('cmd-zone-name').textContent = zone;
+      currentDispatcher.assigned_zone = 'Galați';
+      document.getElementById('cmd-zone-name').textContent = 'Galați';
       loadTickets();
     }
 
@@ -564,8 +577,9 @@ function saveZone() {
        TICKET LOADING & FILTERING
        ============================================================ */
     function loadTickets() {
-      const zone = currentDispatcher?.assigned_zone;
+<!--      const zone = currentDispatcher?.assigned_zone;-->
       // Filter by zone
+      const zone = 'Galați';
       filteredTickets = ALL_TICKETS.filter(t => t.county_sector === zone);
       computeHotspots();
       updateStats();
@@ -597,7 +611,8 @@ function saveZone() {
       const minScore = parseInt(document.getElementById('filter-score').value);
       const status = document.getElementById('filter-status').value;
 
-      const zone = currentDispatcher?.assigned_zone;
+<!--      const zone = currentDispatcher?.assigned_zone;-->
+       const zone = 'Galați';
       let list = ALL_TICKETS.filter(t => t.county_sector === zone);
 
       if (tag)    list = list.filter(t => t.problem_tag === tag);
@@ -638,7 +653,8 @@ function saveZone() {
     }
 
     function updateStats() {
-      const zone = currentDispatcher?.assigned_zone;
+<!--      const zone = currentDispatcher?.assigned_zone;-->
+        const zone = 'Galați';
       const all = ALL_TICKETS.filter(t => t.county_sector === zone);
       document.getElementById('stat-total').textContent   = all.length;
       document.getElementById('stat-urgent').textContent  = all.filter(t => t.is_red_flag).length;
