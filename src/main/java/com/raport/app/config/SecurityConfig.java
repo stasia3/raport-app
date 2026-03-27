@@ -48,7 +48,7 @@ public class SecurityConfig {
                                 "/posts/new"
 
                         ).permitAll()
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
+                        .requestMatchers("/admin/**").hasRole("GlobalAdmin")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
