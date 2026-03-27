@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Controller
 @RequestMapping("/institution")
 public class InstitutionDashboardController {
+    private final String rootFolder = "app/institution/";
 
     private final InstitutionDashboardService institutionDashboardService;
 
@@ -60,8 +61,10 @@ public class InstitutionDashboardController {
         model.addAttribute("selectedStatus", status);
         model.addAttribute("searchValue", search);
 
-        return institutionDashboardService.getDashboardViewName();
+//        return institutionDashboardService.getDashboardViewName();
+        return rootFolder + "institutionDash.html";
     }
+
 
     @GetMapping("/ticket/{id}")
     public String ticketDetail(@PathVariable Integer id,
@@ -116,27 +119,6 @@ public class InstitutionDashboardController {
 
 
 //    ASTA AR TREBUI SA FIE VERSIUNEA CORECTA
-//    private Integer getLoggedUserId(HttpSession session) {
-//        Object userIdObj = session.getAttribute("userId");
-//
-//        if (userIdObj instanceof Integer) {
-//            return (Integer) userIdObj;
-//        }
-//        if (userIdObj instanceof Long) {
-//            return ((Long) userIdObj).intValue();
-//        }
-//        if (userIdObj instanceof String) {
-//            try {
-//                return Integer.valueOf((String) userIdObj);
-//            } catch (NumberFormatException ignored) {
-//                return null;
-//            }
-//        }
-
-//        return null;
-//    }
-
-//    ASTA E DE TEST
     private Integer getLoggedUserId(HttpSession session) {
         Object userIdObj = session.getAttribute("userId");
 
@@ -150,13 +132,34 @@ public class InstitutionDashboardController {
             try {
                 return Integer.valueOf((String) userIdObj);
             } catch (NumberFormatException ignored) {
+                return null;
             }
         }
 
-        // TEMPORAR pentru test local
-        session.setAttribute("userId", 9);
-        return 9;
+        return null;
     }
+
+//    ASTA E DE TEST
+//    private Integer getLoggedUserId(HttpSession session) {
+//        Object userIdObj = session.getAttribute("userId");
+//
+//        if (userIdObj instanceof Integer) {
+//            return (Integer) userIdObj;
+//        }
+//        if (userIdObj instanceof Long) {
+//            return ((Long) userIdObj).intValue();
+//        }
+//        if (userIdObj instanceof String) {
+//            try {
+//                return Integer.valueOf((String) userIdObj);
+//            } catch (NumberFormatException ignored) {
+//            }
+//        }
+//
+//        // TEMPORAR pentru test local
+//        session.setAttribute("userId", 9);
+//        return 9;
+//    }
 
 
     private boolean contains(String value, String q) {
