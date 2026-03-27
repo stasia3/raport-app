@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicReport — Detaliu Tichet Instituție</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/institutionStyle.css}" />
+</head>
+<body class="institution-body">
+
+<div class="inst-layout">
+    <aside class="inst-sidebar">
+        <div class="inst-brand">
+            <div class="inst-brand-mark">CR</div>
+            <div>
+                <div class="inst-brand-title">CivicReport</div>
+                <div class="inst-brand-subtitle">Detaliu tichet</div>
+            </div>
+        </div>
+
+        <div class="inst-user-card">
+            <div class="inst-avatar">IN</div>
+            <div class="inst-user-meta">
+                <div class="inst-user-name" th:text="${institution.officialName}">Instituție</div>
+                <div class="inst-user-role">Cont operațional</div>
+                <div class="inst-user-service" th:text="${institution.serviceType}">Serviciu nedefinit</div>
+            </div>
+        </div>
+
+        <div class="inst-mobile-actions">
+            <a class="btn btn-secondary" th:href="@{/institution/dashboard}">Înapoi la dashboard</a>
+            <a class="btn btn-ghost" th:href="@{/}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="inst-main">
+        <header class="inst-topbar">
+            <div class="inst-topbar-head">
+                <div class="inst-topbar-copy">
+                    <h1 th:text="'Tichet ' + ${ticket.ticketNumber}">Tichet</h1>
+                    <p>Gestionare directă din backend, fără JavaScript.</p>
+                </div>
+            </div>
+        </header>
+
+        <section class="inst-content">
+            <div class="inst-table-card" style="margin-bottom: 1.5rem;">
+                <div class="inst-table-head">
+                    <div>
+                        <h2>Date generale</h2>
+                    </div>
+                </div>
+
+                <div class="inst-detail-grid" style="padding: 1rem;">
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">Număr tichet</span>
+                        <span class="inst-detail-value" th:text="${ticket.ticketNumber}">TK-0000</span>
+                    </div>
+
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">Etichetă</span>
+                        <span class="inst-detail-value" th:text="${ticket.problemTag}">Etichetă</span>
+                    </div>
+
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">Status</span>
+                        <span class="inst-detail-value" th:text="${ticket.status != null ? ticket.status.name() : 'Necunoscut'}">Status</span>
+                    </div>
+
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">Scor prioritate</span>
+                        <span class="inst-detail-value" th:text="${ticket.rankingScore}">0</span>
+                    </div>
+
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">Ultima actualizare</span>
+                        <span class="inst-detail-value" th:text="${#temporals.format(ticket.lastUpdate, 'dd.MM.yyyy HH:mm')}">01.01.2026 10:00</span>
+                    </div>
+
+                    <div class="inst-detail-item">
+                        <span class="inst-detail-label">SLA depășit</span>
+                        <span class="inst-detail-value" th:text="${ticket.isRedFlag ? 'Da' : 'Nu'}">Nu</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="inst-table-card">
+                <div class="inst-table-head">
+                    <div>
+                        <h2>Acțiuni</h2>
+                        <p class="inst-table-subtitle">Flux clasic, pe formulare POST.</p>
+                    </div>
+                </div>
+
+                <div style="padding: 1rem;">
+                    <div class="inst-action-buttons" style="display:flex; gap:1rem; flex-wrap:wrap;">
+                        <form th:action="@{'/institution/ticket/' + ${ticket.id} + '/accept'}" method="post">
+                            <button class="btn btn-primary" type="submit">Acceptă</button>
+                        </form>
+
+                        <form th:action="@{'/institution/ticket/' + ${ticket.id} + '/in-work'}" method="post">
+                            <button class="btn btn-secondary" type="submit">Marchează „În lucru”</button>
+                        </form>
+
+                        <form th:action="@{'/institution/ticket/' + ${ticket.id} + '/resolve'}" method="post">
+                            <button class="btn btn-secondary" type="submit">Marchează „Rezolvat”</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>

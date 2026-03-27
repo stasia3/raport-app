@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CivicReport — Dashboard Instituție</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+    <link rel="stylesheet" th:href="@{/css/institutionStyle.css}" />
+</head>
+<body class="institution-body">
+
+<div class="inst-layout">
+    <aside class="inst-sidebar">
+        <div class="inst-brand">
+            <div class="inst-brand-mark">CR</div>
+            <div>
+                <div class="inst-brand-title">CivicReport</div>
+                <div class="inst-brand-subtitle">Execuție instituție</div>
+            </div>
+        </div>
+
+        <div class="inst-user-card">
+            <div class="inst-avatar">IN</div>
+            <div class="inst-user-meta">
+                <div class="inst-user-name" th:text="${institution.officialName}">Instituție</div>
+                <div class="inst-user-role">Cont operațional</div>
+                <div class="inst-user-service" th:text="${institution.serviceType}">Serviciu nedefinit</div>
+            </div>
+        </div>
+
+        <form th:action="@{/institution/dashboard}" method="get" class="inst-filter-card">
+            <div class="inst-filter-title">Filtrare operațională</div>
+
+            <div class="inst-filter-grid">
+                <div class="inst-filter-group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" class="inst-select">
+                        <option value="">Toate</option>
+                        <option value="Trimis" th:selected="${selectedStatus == 'Trimis'}">Trimis</option>
+                        <option value="Preluat" th:selected="${selectedStatus == 'Preluat'}">Preluat</option>
+                        <option value="In_Lucru" th:selected="${selectedStatus == 'In_Lucru'}">În lucru</option>
+                        <option value="Rezolvat" th:selected="${selectedStatus == 'Rezolvat'}">Rezolvat</option>
+                    </select>
+                </div>
+
+                <div class="inst-filter-group">
+                    <label for="search">Căutare</label>
+                    <input id="search"
+                           name="search"
+                           class="inst-input"
+                           type="text"
+                           placeholder="Nr. tichet, etichetă"
+                           th:value="${searchValue}" />
+                </div>
+            </div>
+
+            <div class="inst-mobile-actions" style="margin-top: 1rem;">
+                <button class="btn btn-secondary" type="submit">Aplică filtre</button>
+                <a class="btn btn-ghost" th:href="@{/institution/dashboard}">Resetare filtre</a>
+            </div>
+        </form>
+
+        <div class="inst-mobile-actions">
+            <a class="btn btn-ghost" th:href="@{/}">Logout</a>
+        </div>
+    </aside>
+
+    <main class="inst-main">
+        <header class="inst-topbar">
+            <div class="inst-topbar-head">
+                <div class="inst-topbar-copy">
+                    <h1>Panou Execuție Instituție</h1>
+                    <p>Vizualizezi tichetele atribuite instituției logate.</p>
+                </div>
+
+                <div class="inst-user-actions">
+                    <a class="btn btn-secondary" th:href="@{/institution/dashboard}">Reîmprospătează</a>
+                    <a class="btn btn-ghost" th:href="@{/}">Logout</a>
+                </div>
+            </div>
+
+            <div class="inst-kpis">
+                <article class="inst-kpi">
+                    <div class="inst-kpi-label">Tichete noi</div>
+                    <div class="inst-kpi-value" th:text="${newTicketsCount}">0</div>
+                    <div class="inst-kpi-note">Neprocesate</div>
+                </article>
+
+                <article class="inst-kpi">
+                    <div class="inst-kpi-label">În execuție</div>
+                    <div class="inst-kpi-value" th:text="${workingTicketsCount}">0</div>
+                    <div class="inst-kpi-note">În lucru</div>
+                </article>
+
+                <article class="inst-kpi flag">
+                    <div class="inst-kpi-label">SLA depășit</div>
+                    <div class="inst-kpi-value" th:text="${slaTicketsCount}">0</div>
+                    <div class="inst-kpi-note">Necesită intervenție rapidă</div>
+                </article>
+            </div>
+        </header>
+
+        <section class="inst-content">
+            <div class="inst-table-card">
+                <div class="inst-table-head">
+                    <div>
+                        <h2>Tichete atribuite</h2>
+                        <p class="inst-table-subtitle">Listă operativă filtrată din backend.</p>
+                    </div>
+                    <div class="inst-table-meta">
+                        <span class="inst-chip" th:text="${#lists.size(tickets)} + ' tichete afișate'">0 tichete afișate</span>
+                        <span class="inst-chip" th:text="'Instituție: ' + ${institution.officialName}">Instituție: —</span>
+                    </div>
+                </div>
+
+                <div class="inst-table-wrap">
+                    <table class="inst-table">
+                        <thead>
+                        <tr>
+                            <th>Nr. Tichet</th>
+                            <th>Etichetă</th>
+                            <th>Ultima actualizare</th>
+                            <th>Status</th>
+                            <th>Prioritate</th>
+                            <th>Acțiune</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(tickets)}">
+                            <td colspan="6">Nu există tichete pentru filtrarea curentă.</td>
+                        </tr>
+
+                        <tr th:each="ticket : ${tickets}">
+                            <td>
+                                <span class="inst-ticket-no" th:text="'#' + ${ticket.ticketNumber}">#TK-0000</span>
+                            </td>
+
+                            <td th:text="${ticket.problemTag}">Etichetă</td>
+
+                            <td th:text="${#temporals.format(ticket.lastUpdate, 'dd.MM.yyyy HH:mm')}">01.01.2026 10:00</td>
+
+                            <td>
+                    <span class="status-badge"
+                          th:text="${ticket.status != null ? ticket.status.name() : 'Necunoscut'}"
+                          th:classappend="${ticket.status != null and ticket.status.name() == 'Trimis'} ? ' status-sent' :
+                                          (${ticket.status != null and ticket.status.name() == 'Preluat'} ? ' status-dispatcher' :
+                                          (${ticket.status != null and ticket.status.name() == 'In_Lucru'} ? ' status-action' :
+                                          (${ticket.status != null and ticket.status.name() == 'Rezolvat'} ? ' status-resolved' : '')))">
+                      Status
+                    </span>
+                            </td>
+
+                            <td>
+                                <span th:if="${ticket.isRedFlag}" class="inst-flag">● SLA depășit</span>
+                                <span th:unless="${ticket.isRedFlag}" class="inst-chip" th:text="'Scor ' + ${ticket.rankingScore}">Scor 0</span>
+                            </td>
+
+                            <td>
+                                <a class="btn btn-secondary"
+                                   th:href="@{'/institution/ticket/' + ${ticket.id}}">
+                                    Gestionează
+                                </a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+</body>
+</html>
