@@ -44,5 +44,16 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
         order by p.createdAt desc
     """)
     List<Post> findAllForFeedByTicketStatus(@Param("status") TicketStatus status);
+    @Query("""
+    select distinct p
+    from Post p
+    left join fetch p.photos
+    left join fetch p.ticket
+    left join fetch p.creator c
+    left join fetch c.user
+    where c.user.email = :email
+    order by p.createdAt desc
+""")
+    List<Post> findAllByCreatorEmail(@Param("email") String email);
 
 }

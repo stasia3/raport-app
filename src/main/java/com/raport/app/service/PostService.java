@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -183,5 +184,9 @@ public class PostService {
             return "";
         }
         return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public List<Post> getMyPosts(String email) {
+        return postRepository.findAllByCreatorEmail(email);
     }
 }

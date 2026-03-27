@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 @Controller
 @RequestMapping("/posts")
@@ -76,5 +77,27 @@ public class UserPostController {
             model.addAttribute("error", ex.getMessage());
             return rootFolder + "createPost";
         }
+    }
+
+    @GetMapping("/my-posts")
+    public String myPosts(Authentication authentication, Model model) {
+        boolean isLoggedIn = authentication != null
+                && authentication.isAuthenticated()
+                && !"anonymousUser".equals(authentication.getName());
+
+        model.addAttribute("isLoggedIn", isLoggedIn);
+
+        if (!isLoggedIn) {
+            return "redirect:/login";
+        }
+
+        String email = authentication.getName();
+        List<Post> posts = postService.getMyPosts(email);
+
+        model.addAttribute("posts", posts);
+        model.addAttribute("postsCount", posts.size());
+        model.addAttribute("currentUsername", email);
+
+        return rootFolder + "my-posts";
     }
 }

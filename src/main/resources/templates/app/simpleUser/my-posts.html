@@ -37,7 +37,7 @@
         </a>
       </li>
       <li>
-        <a th:href="@{/posts/my-posts}">
+        <a href="#">
           <svg class="nav-icon" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true">
             <path d="M3 4h12M3 8h8M3 12h10"/>
           </svg>
@@ -132,49 +132,49 @@
 <!--        <button class="filter-chip">În acțiune</button>-->
 <!--        <button class="filter-chip">Rezolvat</button>-->
 <!--      </div>-->
-      <div class="filter-bar" role="group" aria-label="Filtrare după status">
-        <a th:href="@{/feed}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == null or selectedStatus == ''} ? ' active' : ''">
-          Toate
-        </a>
+<!--      <div class="filter-bar" role="group" aria-label="Filtrare după status">-->
+<!--        <a th:href="@{/feed}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == null or selectedStatus == ''} ? ' active' : ''">-->
+<!--          Toate-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='Sesizat')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'Sesizat'} ? ' active' : ''">
-          Sesizat
-        </a>
+<!--        <a th:href="@{/feed(status='Sesizat')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'Sesizat'} ? ' active' : ''">-->
+<!--          Sesizat-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='Validat')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'Validat'} ? ' active' : ''">
-          Validat
-        </a>
+<!--        <a th:href="@{/feed(status='Validat')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'Validat'} ? ' active' : ''">-->
+<!--          Validat-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='Trimis')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'Trimis'} ? ' active' : ''">
-          Trimis
-        </a>
+<!--        <a th:href="@{/feed(status='Trimis')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'Trimis'} ? ' active' : ''">-->
+<!--          Trimis-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='Preluat')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'Preluat'} ? ' active' : ''">
-          Preluat
-        </a>
+<!--        <a th:href="@{/feed(status='Preluat')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'Preluat'} ? ' active' : ''">-->
+<!--          Preluat-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='In_Lucru')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'In_Lucru'} ? ' active' : ''">
-          În acțiune
-        </a>
+<!--        <a th:href="@{/feed(status='In_Lucru')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'In_Lucru'} ? ' active' : ''">-->
+<!--          În acțiune-->
+<!--        </a>-->
 
-        <a th:href="@{/feed(status='Rezolvat')}"
-           class="filter-chip"
-           th:classappend="${selectedStatus == 'Rezolvat'} ? ' active' : ''">
-          Rezolvat
-        </a>
-      </div>
+<!--        <a th:href="@{/feed(status='Rezolvat')}"-->
+<!--           class="filter-chip"-->
+<!--           th:classappend="${selectedStatus == 'Rezolvat'} ? ' active' : ''">-->
+<!--          Rezolvat-->
+<!--        </a>-->
+<!--      </div>-->
       <article class="post-card" th:each="post, postStat : ${posts}">
         <div class="carousel">
           <div class="carousel-track"
