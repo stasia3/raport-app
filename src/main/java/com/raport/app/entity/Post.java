@@ -53,6 +53,9 @@ public class Post {
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private java.util.List<Photo> photos = new java.util.ArrayList<>();
 
+    @OneToOne(mappedBy = "post")
+    private Ticket ticket;
+
     // ===== getters & setters =====
 
     public Integer getId() {
@@ -167,4 +170,11 @@ public class Post {
         this.photos = photos;
     }
 
+    public Ticket getTicket() {
+        return ticket;
+    }
+
+    public void setTicket(Ticket ticket) {
+        this.ticket = ticket;
+    }
 }

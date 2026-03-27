@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ro" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dispatcher — Postări</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}" />
+</head>
+<body>
+
+<div class="create-container">
+    <h2>Postări pentru dispatcher</h2>
+
+    <div th:if="${error}" style="color:#D9534F; margin-bottom:16px;">
+        <span th:text="${error}"></span>
+    </div>
+
+    <article class="post-card" th:each="post : ${posts}">
+        <div class="post-body">
+            <div class="post-meta-top">
+                <span class="post-tag" th:text="${post.problemTag}">Tag</span>
+                <span class="post-location" th:text="${post.street + ', ' + post.city}">Locație</span>
+            </div>
+
+            <h3 class="post-title" th:text="${post.title}">Titlu</h3>
+            <p class="post-desc" th:text="${post.description}">Descriere</p>
+
+            <div th:if="${post != null and post.ticket == null}" style="margin-top: 14px;">
+                <form th:action="@{/dispatcher/posts/{id}/take(id=${post.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="btn btn-primary">Preia postarea</button>
+                </form>
+            </div>
+
+            <div th:if="${post != null and post.ticket != null}" style="margin-top: 14px;">
+                <div style="margin-bottom: 10px;">
+                    <strong>Ticket:</strong>
+                    <span th:text="${post.ticket.ticketNumber}">TCK-2026-1</span>
+                </div>
+
+                <div style="margin-bottom: 10px;">
+                    <strong>Status curent:</strong>
+                    <span th:text="${post.ticket.status}">Sesizat</span>
+                </div>
+
+                <div th:if="${post.ticket.assignedInstitutionUser != null}" style="margin-bottom: 10px;">
+                    <strong>Instituție asignată:</strong>
+                    <span th:text="${post.ticket.assignedInstitutionUser.email}">institutie@email.com</span>
+                </div>
+
+                <form th:action="@{/dispatcher/tickets/{id}/status(id=${post.ticket.id})}" method="post" style="margin-bottom: 12px;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <select name="status">
+                        <option th:each="status : ${ticketStatuses}"
+                                th:value="${status}"
+                                th:text="${status}"
+                                th:selected="${status == post.ticket.status}">
+                        </option>
+                    </select>
+
+                    <button type="submit" class="btn btn-secondary">Actualizează statusul</button>
+                </form>
+
+                <form th:action="@{/dispatcher/tickets/{id}/assign(id=${post.ticket.id})}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+                    <select name="institutionUserId">
+                        <option value="" disabled>Selectează instituția</option>
+                        <option th:each="institution : ${institutionUsers}"
+                                th:value="${institution.id}"
+                                th:text="${institution.email}"
+                                th:selected="${post.ticket.assignedInstitutionUser != null and institution.id == post.ticket.assignedInstitutionUser.id}">
+                        </option>
+                    </select>
+
+                    <button type="submit" class="btn btn-primary">Asignează instituției</button>
+                </form>
+            </div>
+        </div>
+    </article>
+</div>
+
+</body>
+</html>
