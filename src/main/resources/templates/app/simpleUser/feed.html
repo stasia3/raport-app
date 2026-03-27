@@ -120,17 +120,60 @@
     <!-- Feed -->
     <div class="feed-container">
       <div class="feed-meta">
-        <p><strong>47 rapoarte</strong> în ultimele 30 de zile</p>
+        <p><strong th:text="${postsCount}">0 </strong>rapoarte afisate</p>
       </div>
 
       <!-- Filter chips -->
+<!--      <div class="filter-bar" role="group" aria-label="Filtrare după status">-->
+<!--        <button class="filter-chip active">Toate</button>-->
+<!--        <button class="filter-chip">În verificare</button>-->
+<!--        <button class="filter-chip">Repartizat</button>-->
+<!--        <button class="filter-chip">Trimis</button>-->
+<!--        <button class="filter-chip">În acțiune</button>-->
+<!--        <button class="filter-chip">Rezolvat</button>-->
+<!--      </div>-->
       <div class="filter-bar" role="group" aria-label="Filtrare după status">
-        <button class="filter-chip active">Toate</button>
-        <button class="filter-chip">În verificare</button>
-        <button class="filter-chip">Repartizat</button>
-        <button class="filter-chip">Trimis</button>
-        <button class="filter-chip">În acțiune</button>
-        <button class="filter-chip">Rezolvat</button>
+        <a th:href="@{/feed}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == null or selectedStatus == ''} ? ' active' : ''">
+          Toate
+        </a>
+
+        <a th:href="@{/feed(status='Sesizat')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'Sesizat'} ? ' active' : ''">
+          Sesizat
+        </a>
+
+        <a th:href="@{/feed(status='Validat')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'Validat'} ? ' active' : ''">
+          Validat
+        </a>
+
+        <a th:href="@{/feed(status='Trimis')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'Trimis'} ? ' active' : ''">
+          Trimis
+        </a>
+
+        <a th:href="@{/feed(status='Preluat')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'Preluat'} ? ' active' : ''">
+          Preluat
+        </a>
+
+        <a th:href="@{/feed(status='In_Lucru')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'In_Lucru'} ? ' active' : ''">
+          În acțiune
+        </a>
+
+        <a th:href="@{/feed(status='Rezolvat')}"
+           class="filter-chip"
+           th:classappend="${selectedStatus == 'Rezolvat'} ? ' active' : ''">
+          Rezolvat
+        </a>
       </div>
       <article class="post-card" th:each="post, postStat : ${posts}">
         <div class="carousel">
@@ -180,7 +223,7 @@
           <span class="carousel-count"
                 th:if="${post.photos != null and !post.photos.isEmpty()}"
                 th:id="'count-' + ${post.id}"
-                th:text="'1 / ' + ${post.photos.size()}">
+                th:text="${'1 / ' + post.photos.size()}">
             1 / 1
         </span>
         </div>
@@ -198,7 +241,23 @@
 
           <h3 class="post-title" th:text="${post.title}">Titlu</h3>
           <p class="post-desc" th:text="${post.description}">Descriere</p>
+          <div th:if="${post.ticket != null}">
+  <span class="status-badge"
+        th:text="${post.ticket.status}"
+        th:classappend="
+          ${post.ticket.status.name() == 'Sesizat'} ? ' status-sent' :
+          (${post.ticket.status.name() == 'Validat'} ? ' status-dispatcher' :
+          (${post.ticket.status.name() == 'Trimis'} ? ' status-sent' :
+          (${post.ticket.status.name() == 'Preluat'} ? ' status-dispatcher' :
+          (${post.ticket.status.name() == 'In_Lucru'} ? ' status-action' :
+          (${post.ticket.status.name() == 'Rezolvat'} ? ' status-resolved' : '')))))">
+    Status
+  </span>
+          </div>
 
+          <div th:if="${post.ticket == null}">
+            <span class="status-badge">Fără tichet</span>
+          </div>
           <div class="post-footer">
             <div class="post-author">
               <div class="author-avatar"
@@ -218,170 +277,6 @@
           </div>
         </div>
       </article>
-
-<!--      <div>-->
-<!--        &lt;!&ndash; ── POST 1 ── &ndash;&gt;-->
-<!--      <article class="post-card">-->
-<!--        <div class="carousel">-->
-<!--          <div class="carousel-track" id="track1">-->
-<!--            <div class="carousel-slide">-->
-<!--              <span class="carousel-placeholder">Fotografie indisponibilă</span>-->
-<!--            </div>-->
-<!--            <div class="carousel-slide">-->
-<!--              <span class="carousel-placeholder">Fotografie 2 / 3</span>-->
-<!--            </div>-->
-<!--            <div class="carousel-slide">-->
-<!--              <span class="carousel-placeholder">Fotografie 3 / 3</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <button class="carousel-btn prev" onclick="slide('track1',-1)" aria-label="Anterior">-->
-<!--            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1.5L3 5l3.5 3.5"/></svg>-->
-<!--          </button>-->
-<!--          <button class="carousel-btn next" onclick="slide('track1', 1)" aria-label="Următor">-->
-<!--            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 1.5L7 5l-3.5 3.5"/></svg>-->
-<!--          </button>-->
-<!--          <div class="carousel-dots">-->
-<!--            <span class="carousel-dot active"></span>-->
-<!--            <span class="carousel-dot"></span>-->
-<!--            <span class="carousel-dot"></span>-->
-<!--          </div>-->
-<!--          <span class="carousel-count">1 / 3</span>-->
-<!--        </div>-->
-<!--        <div class="post-body">-->
-<!--          <div class="post-meta-top">-->
-<!--            <span class="post-tag">Infrastructură</span>-->
-<!--            <span class="post-time">acum 2 ore</span>-->
-<!--            <span class="post-location">-->
-<!--              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>-->
-<!--              Str. Mihai Eminescu 14-->
-<!--            </span>-->
-<!--          </div>-->
-<!--          <h3 class="post-title">Groapă adâncă pe carosabil, pericol pentru vehicule</h3>-->
-<!--          <p class="post-desc">Groapa s-a format în urma ploilor din ultima săptămână și are aproximativ 30 cm adâncime. Reprezintă un pericol real pentru motociclete și bicicliști care circulă pe acest drum.</p>-->
-<!--          <div>-->
-<!--            <span class="status-badge status-action">În acțiune</span>-->
-<!--          </div>-->
-<!--          <div class="post-footer">-->
-<!--            <div class="post-author">-->
-<!--              <div class="author-avatar">MC</div>-->
-<!--              <span class="author-name">Maria Constantin</span>-->
-<!--            </div>-->
-<!--            <div class="post-actions">-->
-<!--              <button class="action-btn">Susține · 12</button>-->
-<!--              <button class="action-btn">Comentarii · 4</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </article>-->
-
-<!--      &lt;!&ndash; ── POST 2 ── &ndash;&gt;-->
-<!--      <article class="post-card">-->
-<!--        <div class="carousel">-->
-<!--          <div class="carousel-track" id="track2">-->
-<!--            <div class="carousel-slide">-->
-<!--              <span class="carousel-placeholder">Fotografie indisponibilă</span>-->
-<!--            </div>-->
-<!--            <div class="carousel-slide">-->
-<!--              <span class="carousel-placeholder">Fotografie 2 / 2</span>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--          <button class="carousel-btn prev" onclick="slide('track2',-1)" aria-label="Anterior">-->
-<!--            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6.5 1.5L3 5l3.5 3.5"/></svg>-->
-<!--          </button>-->
-<!--          <button class="carousel-btn next" onclick="slide('track2', 1)" aria-label="Următor">-->
-<!--            <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.5 1.5L7 5l-3.5 3.5"/></svg>-->
-<!--          </button>-->
-<!--          <div class="carousel-dots">-->
-<!--            <span class="carousel-dot active"></span>-->
-<!--            <span class="carousel-dot"></span>-->
-<!--          </div>-->
-<!--          <span class="carousel-count">1 / 2</span>-->
-<!--        </div>-->
-<!--        <div class="post-body">-->
-<!--          <div class="post-meta-top">-->
-<!--            <span class="post-tag">Iluminat public</span>-->
-<!--            <span class="post-time">ieri, 18:30</span>-->
-<!--            <span class="post-location">-->
-<!--              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>-->
-<!--              Bd. Unirii, Sector 4-->
-<!--            </span>-->
-<!--          </div>-->
-<!--          <h3 class="post-title">Stâlpi de iluminat nefuncționali — tronson de 200 m</h3>-->
-<!--          <p class="post-desc">Cinci stâlpi consecutivi nu funcționează de trei săptămâni, creând o zonă întunecată pe timp de noapte. Zona este frecventată de elevi și bătrâni.</p>-->
-<!--          <div>-->
-<!--            <span class="status-badge status-sent">Trimis instituției</span>-->
-<!--          </div>-->
-<!--          <div class="post-footer">-->
-<!--            <div class="post-author">-->
-<!--              <div class="author-avatar">AD</div>-->
-<!--              <span class="author-name">Alexandru Dinu</span>-->
-<!--            </div>-->
-<!--            <div class="post-actions">-->
-<!--              <button class="action-btn">Susține · 8</button>-->
-<!--              <button class="action-btn">Comentarii · 2</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </article>-->
-
-<!--      &lt;!&ndash; ── POST 3 ── &ndash;&gt;-->
-<!--      <article class="post-card">-->
-<!--        <div class="post-body" style="padding-top:1.35rem;">-->
-<!--          <div class="post-meta-top">-->
-<!--            <span class="post-tag">Salubritate</span>-->
-<!--            <span class="post-time">acum 3 zile</span>-->
-<!--            <span class="post-location">-->
-<!--              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>-->
-<!--              Parc Tineretului-->
-<!--            </span>-->
-<!--          </div>-->
-<!--          <h3 class="post-title">Coșuri de gunoi distruse în parcul de lângă lac</h3>-->
-<!--          <p class="post-desc">Trei coșuri de gunoi din zona de promenadă au fost vandalizate. Gunoiul se acumulează pe alei, afectând aspectul parcului și igiena zonei.</p>-->
-<!--          <div>-->
-<!--            <span class="status-badge status-resolved">Rezolvat</span>-->
-<!--          </div>-->
-<!--          <div class="post-footer">-->
-<!--            <div class="post-author">-->
-<!--              <div class="author-avatar">IP</div>-->
-<!--              <span class="author-name">Ion Popescu</span>-->
-<!--            </div>-->
-<!--            <div class="post-actions">-->
-<!--              <button class="action-btn">Susține · 5</button>-->
-<!--              <button class="action-btn">Comentarii · 1</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </article>-->
-
-<!--      &lt;!&ndash; ── POST 4 ── &ndash;&gt;-->
-<!--      <article class="post-card">-->
-<!--        <div class="post-body" style="padding-top:1.35rem;">-->
-<!--          <div class="post-meta-top">-->
-<!--            <span class="post-tag">Trafic</span>-->
-<!--            <span class="post-time">acum 5 zile</span>-->
-<!--            <span class="post-location">-->
-<!--              <svg width="9" height="9" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true"><path d="M5 0C3.07 0 1.5 1.57 1.5 3.5c0 2.63 3.5 6.5 3.5 6.5s3.5-3.87 3.5-6.5C8.5 1.57 6.93 0 5 0zm0 5a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"/></svg>-->
-<!--              Intersecție Calea Victoriei-->
-<!--            </span>-->
-<!--          </div>-->
-<!--          <h3 class="post-title">Semafor defect — ciclu de culori blocat pe roșu</h3>-->
-<!--          <p class="post-desc">Semaforul din intersecție a rămas blocat pe culoarea roșie de ieri dimineață. Provoacă ambuteiaje și risc de accidente pe durata orelor de vârf.</p>-->
-<!--          <div>-->
-<!--            <span class="status-badge status-verifying">În verificare</span>-->
-<!--          </div>-->
-<!--          <div class="post-footer">-->
-<!--            <div class="post-author">-->
-<!--              <div class="author-avatar">EB</div>-->
-<!--              <span class="author-name">Elena Bălan</span>-->
-<!--            </div>-->
-<!--            <div class="post-actions">-->
-<!--              <button class="action-btn">Susține · 19</button>-->
-<!--              <button class="action-btn">Comentarii · 7</button>-->
-<!--            </div>-->
-<!--          </div>-->
-<!--        </div>-->
-<!--      </article>-->
-<!--      </div>-->
 
     </div><!-- /feed-container -->
   </div><!-- /main-content -->
@@ -403,14 +298,6 @@
     dots.forEach((d, i) => d.classList.toggle('active', i === state[id]));
     if (count) count.textContent = `${state[id]+1} / ${slides}`;
   }
-
-  // Filter chips
-  document.querySelectorAll('.filter-chip').forEach(chip => {
-    chip.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
-      chip.classList.add('active');
-    });
-  });
 </script>
 
 </body>
